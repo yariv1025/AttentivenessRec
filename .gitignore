@@ -15,7 +15,7 @@
 
 # Manually added
 .idea/
-.github/workflows
+.github/workflows/python-package-conda.yml
 
 # Generated files
 .idea/**/contentModel.xml
