@@ -15,7 +15,7 @@
 
 # Manually added
 .idea/
-.github/
+.github/workflows
 
 # Generated files
 .idea/**/contentModel.xml
