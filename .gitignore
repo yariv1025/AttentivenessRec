@@ -15,6 +15,7 @@
 
 # Manually added
 .idea/
+.github/
 
 # Generated files
 .idea/**/contentModel.xml
