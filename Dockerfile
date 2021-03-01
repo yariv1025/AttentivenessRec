@@ -1,11 +1,31 @@
-FROM python:3.8-slim-buster
+#FROM python:3.8-slim-buster
+#
+#WORKDIR /EmotionRec
+#
+#COPY requirements.txt requirements.txt
+#
+#RUN pip install -r requirements.txt
+#
+#COPY . .
+#
+#CMD [ "python3", "./app.py"]
 
-WORKDIR /EmotionRec
 
-COPY requirements.txt requirements.txt
+FROM continuumio/miniconda3
 
-RUN pip install -r requirements.txt
+WORKDIR /app
 
-COPY . .
+# Create the environment:
+COPY environment.yml .
+RUN conda env create -f environment.yml
 
-CMD [ "python3", "./app.py"]
+# Make RUN commands use the new environment:
+SHELL ["conda", "run", "-n", "myenv", "/bin/bash", "-c"]
+
+# Make sure the environment is activated:
+RUN echo "Make sure flask is installed:"
+RUN python -c "import flask"
+
+# The code to run when container is started:
+COPY run.py .
+ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "myenv", "python", "run.py"]
