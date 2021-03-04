@@ -12,7 +12,6 @@ class FrameProvider(cv2.VideoCapture):
         super().__init__(param)
         if not self.isOpened():
             raise IOError("Could not open video stream.")
-        return True
 
     """    
     Get frame from a video stream, if stream is open.
