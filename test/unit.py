@@ -1,7 +1,31 @@
-# import unittest
-# # from solutions import Collection
-#
-#
+import unittest
+
+from src.Location import Location
+
+
+class LocationTestCase(unittest.TestCase):
+
+    def test_setter(self):
+        location = Location()
+
+        location.set_x(1)
+        self.assertEqual(location.x, 1)
+
+        with self.assertRaises(IOError):
+            location.set_y(-2)
+
+        with self.assertRaises(IOError):
+            location.set_width('#')
+
+    def test_to_string(self):
+        location = Location(1, 2, 3, 4)
+        self.assertEqual(location.get_location(), {'x': 1, 'y': 2, 'width': 3, 'length': 4})
+
+    def test_constructor(self):
+        with self.assertRaises(IOError):
+            Location('a', 'b', 'c', 'd')
+
+
 # # Example:
 #
 # class MyTestCase(unittest.TestCase):
@@ -102,6 +126,6 @@
 #         c = Collection((1,2,3,4))
 #         self.assertEqual(repr(c), "Collection(1,2,3,4)")
 #
-#
-# if __name__ == '__main__':
-#     unittest.main()
+
+if __name__ == '__main__':
+    unittest.main()
