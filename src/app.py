@@ -1,7 +1,12 @@
+from matplotlib import pyplot
+
 from src.FrameProvider import FrameProvider
-import cv2,time
+import cv2, time
+from src.FaceDetector import FaceDetector
+
 
 def hello_world():
+    # # frame providing
     # fp = FrameProvider(0)
     #
     # while(True):
@@ -16,8 +21,15 @@ def hello_world():
     # fp.release()
     # cv2.destroyAllWindows()
 
-    pass
+    # # face detecting
+    # fd = FaceDetector()
+    # img = pyplot.imread("../docs/ImagesForTests/3.jpg")
+    # # detect faces in the image
+    # faces = fd.has_face(img)
+    #
+    # print(faces)
 
+    pass
 
 
 if __name__ == '__main__':
