@@ -1,47 +1,24 @@
-class FaceDetector:
+from mtcnn.mtcnn import MTCNN
+
+
+class FaceDetector(MTCNN):
     """
-    :param frame - frame from the stream.
-    :param model - the model used to cut the frame.
+    Constructor:
     """
 
-    def __init__(self, frame, model):
-        self.frame = frame
-        self.model = model
+    def __init__(self):
+        super().__init__()
 
-    """
-    returns the location of identified face.
-    :param frame - identified frame.
+    """"
+    :return face image
     """
 
-    def findFace(self, frame):
-        pass
+    def get_face(self, img):
+        return self.detect_faces(img)
 
-    """
-    crop only the identified face.
-    @param face_location - gets the face position in the frame.
-    """
-
-    def cropFace(self, face_location):
-        pass
-
-    """
-    :return - returns a face object.
-    :param face_location - ets the face position in the frame.
+    """"
+    :return the Location of the frame.
     """
 
-    def getFace(self, face_location):
-        return self.cropFace(face_location)
-
-    """
-    :return - returns the “informal” (readable) string representation of the object.
-    """
-
-    def str(self):
-        return 'class {}'.format("FaceDetector")
-
-    """
-    :return
-    """
-
-    def __repr__(self):
-        pass
+    def has_face(self, img):
+        return len(self.get_face(img)) > 0
