@@ -1,34 +1,24 @@
-class FrameProvider:
-    """
-    :param stream - .
-    """
+import cv2
 
-    def __init__(self, stream):
-         pass
 
+class FrameProvider(cv2.VideoCapture):
     """
-    imports video stream.
-    :param videoStream - get a stream of video.
-    """
+        Constructor:
+        :param param - Video stream source.
+        :return Boolean - If stream successfully initialized.
+        """
 
-    def setStream(self, videoStream):
-        pass
+    def __init__(self, param):
+        super().__init__(param)
+        if not self.isOpened():
+            raise IOError("Could not open video stream.")
 
-    """
-    :param videoStream - video stream.
-    """
-
-    def cropFrame(self, videoStream):
-        pass
-
-    """
-    :return - returns a single frame.
-    :param videoStream - video stream.
+    """    
+    Get frame from a video stream, if stream is open.
     """
 
-    def getFrame(self, videoStream):
-        return self.cropFrame(videoStream)
-
-
-
-
+    def get_frame(self):
+        if not self.isOpened():
+            raise IOError("Could not open video stream.")
+        res, frame = self.read()
+        return frame
