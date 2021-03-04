@@ -1,3 +1,28 @@
+"""
+:return Boolean
+checks for valid value
+"""
+
+
+def check_value(value):
+    if (not isinstance(value, int)) or value < 0:
+        return False
+    return True
+
+
+"""
+:return Boolean
+checks for valid values
+"""
+
+
+def check_multi_value(*integers):
+    for x in integers:
+        if not check_value(x):
+            return False
+    return True
+
+
 class Location:
     """
     Constructor:
@@ -8,33 +33,63 @@ class Location:
     """
 
     def __init__(self, x=0, y=0, width=0, length=0):
+        if not check_multi_value(x, y, width, length):
+            raise IOError("Invalid values")
         self.x = x
         self.y = y
         self.width = width
         self.length = length
 
     """
-    Setter:
     :param int - x coordinate of the upper right corner.
-    :param int - y coordinate of the upper right corner.
-    :param float - frame width.
-    :param float - frame length.
     """
 
-    def set_location(self, x, y, width, length):
+    def set_x(self, x):
+        if not check_value(x):
+            raise IOError("Invalid values")
         self.x = x
-        self.y = y
-        self.width = width
-        self.length = length
+        return True
 
     """
-    Getter:
+    :param int - y coordinate of the upper right corner.
+    """
+
+    def set_y(self, y):
+        if not check_value(y):
+            raise IOError("Invalid values")
+        self.y = y
+        return True
+
+    """
+    :param int - frame width.
+    """
+
+    def set_width(self, width):
+        if not check_value(width):
+            raise IOError("Invalid values")
+        self.width = width
+        return True
+
+    """    
+    :param int - frame length.
+    """
+
+    def set_length(self, length):
+        if not check_value(length):
+            raise IOError("Invalid values")
+        self.length = length
+        return True
+
+    """
     :return - returns Location object (x,y, width, length).
     """
 
     def get_location(self):
-        location = Location(self.x, self.y, self.width, self.length)
-        return location
+        return {'x': self.x,
+                'y': self.y,
+                'width': self.width,
+                'length': self.length
+                }
 
     """
     :return - returns Location as a string.
@@ -42,4 +97,3 @@ class Location:
 
     def to_string(self):
         return '({0}, {1}, {2}, {3})'.format(self.x, self.y, self.width, self.length)
-        # return '(x=%d, y=%d, width=%d, length=%d)' % (self.x, self.y, self.width, self.length)
