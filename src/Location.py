@@ -24,15 +24,16 @@ def check_multi_value(*integers):
 
 
 class Location:
-    """
-    Constructor:
-    :param x - x coordinate of the upper right corner (0 on default).
-    :param y - y coordinate of the upper right corner (0 on default).
-    :param width - frame width (0 on default)
-    :param length - frame length (0 on default)
-    """
+
 
     def __init__(self, x=0, y=0, width=0, length=0):
+        """
+        Constructor:
+        :param x - x coordinate of the upper right corner (0 on default).
+        :param y - y coordinate of the upper right corner (0 on default).
+        :param width - frame width (0 on default)
+        :param length - frame length (0 on default)
+        """
         if not check_multi_value(x, y, width, length):
             raise IOError("Invalid values")
         self.x = x
@@ -40,11 +41,13 @@ class Location:
         self.width = width
         self.length = length
 
-    """
-    :param int - x coordinate of the upper right corner.
-    """
+
 
     def set_x(self, x):
+        """
+        Set x coordinate value.
+        :param int - x coordinate of the upper right corner.
+        """
         if not check_value(x):
             raise IOError("Invalid values")
         self.x = x
