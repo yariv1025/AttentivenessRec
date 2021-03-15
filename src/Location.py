@@ -92,9 +92,10 @@ class Location:
                 'length': self.length
                 }
 
-    def to_string(self):
+       def to_string(self):
         """
         create a readable string of Location object.
         :return: object string
         """
         return '({0}, {1}, {2}, {3})'.format(self.x, self.y, self.width, self.length)
+
