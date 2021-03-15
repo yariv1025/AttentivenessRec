@@ -92,7 +92,7 @@ class Location:
                 'length': self.length
                 }
 
-       def to_string(self):
+    def to_string(self):
         """
         create a readable string of Location object.
         :return: object string
