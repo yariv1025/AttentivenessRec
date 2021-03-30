@@ -1,18 +1,14 @@
-class ModelCreator:
-    """
-    :param model - The model used for system training.
-    """
-    def __init__(self, model):
-        self.model = model
+import os
 
-    """
-    :param database - the database we will train.
-    """
-    def trainModel(self, database):
-        pass
+import torch
+from emotic_app import emotic
 
-    """
-    :param database - .
-    """
-    def getModel(self, database):
-        return self.trainModel(database)
+
+def create_model():
+    emotic()
+    print("Model Created.")
+
+
+def get_model():
+    print(emotic())
+

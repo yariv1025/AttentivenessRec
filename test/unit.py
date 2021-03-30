@@ -3,7 +3,7 @@ from matplotlib import pyplot
 from mtcnn.exceptions.invalid_image import InvalidImage
 
 from src.Location import Location
-from src.FaceDetector import FaceDetector
+
 
 
 class LocationTestCase(unittest.TestCase):
@@ -28,21 +28,6 @@ class LocationTestCase(unittest.TestCase):
         with self.assertRaises(IOError):
             Location('a', 'b', 'c', 'd')
 
-
-class FaceDetectorTestCase(unittest.TestCase):
-
-    def test_constructor(self):
-        detector = FaceDetector()
-        self.assertEqual(type(detector), FaceDetector)
-
-    def test_has_face(self):
-        detector = FaceDetector()
-        hasface = pyplot.imread("../docs/ImagesForTests/2.jpg")
-        noface = pyplot.imread("../docs/3/ImagesForTests.jpg")
-        self.assertEqual(detector.has_face(hasface), True)
-        self.assertEqual(detector.has_face(noface), False)
-        with self.assertRaises(InvalidImage):
-            detector.has_face(None)
 
 
 # # Example:
