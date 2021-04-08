@@ -1,4 +1,7 @@
+import os
+
 import cv2
+from mtcnn import mtcnn
 
 
 class FrameProvider(cv2.VideoCapture):
@@ -15,8 +18,7 @@ class FrameProvider(cv2.VideoCapture):
 
     def get_frame(self):
         """
-         Get frame from a video stream, if stream is open.
-        :return: frame
+        Get frame from a video stream, if stream is open.
         """
         if not self.isOpened():
             raise IOError("Could not open video stream.")
