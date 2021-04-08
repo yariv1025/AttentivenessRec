@@ -113,7 +113,7 @@ def emotic():
         if args.inference_file is None:
             raise ValueError('Inference file not provided. Please pass a valid inference file for inference')
         return inference_emotic(args.inference_file, model_path, result_path, context_norm, body_norm, ind2cat, ind2vad,
-                         args)
+                                args)
 
     else:
         raise ValueError('Unknown mode')

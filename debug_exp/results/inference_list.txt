@@ -1,1 +1,1 @@
-D:\GitProjects\AttentivenessRec\debug_exp\frames\frame.jpg Affection Anticipation Disquietment Doubt/Confusion Engagement Esteem Happiness Peace Pleasure Sympathy 5.9875 5.0099 6.6031
+D:\GitProjects\AttentivenessRec\debug_exp\frames\frame.jpg Affection Anger Annoyance Aversion Confidence Disapproval Embarrassment Excitement Fatigue Fear Happiness Peace Pleasure Sadness Surprise Sympathy 5.1529 4.2595 6.6463

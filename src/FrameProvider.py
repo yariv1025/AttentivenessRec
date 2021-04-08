@@ -1,5 +1,4 @@
 import os
-
 import cv2
 from mtcnn import mtcnn
 
