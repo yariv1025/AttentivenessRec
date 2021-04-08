@@ -1,1 +1,1 @@
-D:\PyCharmProjects\AttentivenessRec\debug_exp\frames\frame.jpg Anticipation Engagement Happiness Pleasure 5.9778 5.0565 6.6169
+D:\GitProjects\AttentivenessRec\debug_exp\frames\frame.jpg Affection Anticipation Disquietment Doubt/Confusion Engagement Esteem Happiness Peace Pleasure Sympathy 5.9875 5.0099 6.6031
