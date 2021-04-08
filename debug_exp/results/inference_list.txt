@@ -1,1 +1,0 @@
-D:\GitProjects\AttentivenessRec\debug_exp\frames\frame.jpg Affection Anger Annoyance Aversion Confidence Disapproval Embarrassment Excitement Fatigue Fear Happiness Peace Pleasure Sadness Surprise Sympathy 5.1529 4.2595 6.6463

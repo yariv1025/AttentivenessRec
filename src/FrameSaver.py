@@ -21,9 +21,7 @@ class FrameSaver(threading.Thread):
         self.threadID = tid
         self.fp = fp
         self.locks = locks
-
         self.locks[1].acquire()
-        print('consumer locks')
 
     def run(self):
         """
@@ -33,10 +31,7 @@ class FrameSaver(threading.Thread):
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 self.fp.release()
                 break
-            print(f"FS::Lock P is locked: {self.locks[0].locked()}")
-            print(f"FS::Lock C is locked: {self.locks[1].locked()}")
             self.locks[0].acquire()
-            print('producer locks')
             try:
                 frame = self.fp.get_frame()
                 # TODO: Perform check - if frame directory dosent exist -> create
@@ -63,7 +58,4 @@ class FrameSaver(threading.Thread):
                             faces[3]))
 
             self.locks[1].release()
-            print('release consumer\n')
-            print(f"FS::Lock P is locked: {self.locks[0].locked()}")
-            print(f"FS::Lock C is locked: {self.locks[1].locked()}")
             time.sleep(5)
