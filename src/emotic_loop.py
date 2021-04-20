@@ -4,11 +4,12 @@ from src.emotic_app import emotic
 
 class EmoticLoop(threading.Thread):
 
-    def __init__(self, tid, fp, locks):
+    def __init__(self, tid, fp, locks, gui):
         threading.Thread.__init__(self)
         self.threadID = tid
         self.fp = fp
         self.locks = locks
+        self.gui = gui
 
     def run(self):
         while self.fp.isOpened():
@@ -16,6 +17,6 @@ class EmoticLoop(threading.Thread):
                 self.fp.release()
                 break
             self.locks[1].acquire()
-            print(emotic())
+            self.gui.updateEmotionTextBox(emotic())
             self.locks[0].release()
 

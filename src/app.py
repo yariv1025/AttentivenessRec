@@ -4,7 +4,8 @@ from src.FrameDisplay import FrameDisplay
 from src.FrameSaver import FrameSaver
 import threading
 from src.emotic_loop import EmoticLoop
-
+import src.gui
+import tkinter as tk
 
 def app():
     # locks creation
@@ -14,12 +15,15 @@ def app():
 
     fp = FrameProvider(0)
 
-    thread_display = FrameDisplay(1, fp)
+    # Create a gui window and pass it to the Application object
+    gui = src.gui.App(tk.Tk(), "AttentivnessRec", fp)
+
+    # thread_display = FrameDisplay(1, fp)
     thread_saver = FrameSaver(2, fp, locks)
-    emotic_loop = EmoticLoop(3, fp, locks)
+    emotic_loop = EmoticLoop(3, fp, locks, gui)
 
 
-    thread_display.start()
+    # thread_display.start()
     thread_saver.start()
     emotic_loop.start()
 
