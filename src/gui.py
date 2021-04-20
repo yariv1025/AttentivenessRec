@@ -70,15 +70,19 @@ class App:
 
     def createProgressBars(self, window):
 
-        self.emotionPB = ProgressBar(window, 'emotions: ')
-        self.valencePB = ProgressBar(window, 'valence: ')
-        self.arousalPB = ProgressBar(window, 'arousal: ')
-        self.dominancePB = ProgressBar(window, 'dominance: ')
+        self.emotionPB = Progressbar(window, orient=tk.HORIZONTAL,
+                                     length=300, mode='determinate', maximum=10, value=0)
+        self.valencePB = Progressbar(window, orient=tk.HORIZONTAL,
+                                     length=300, mode='determinate', maximum=10, value=0)
+        self.arousalPB = Progressbar(window, orient=tk.HORIZONTAL,
+                                     length=300, mode='determinate', maximum=10, value=0)
+        self.dominancePB = Progressbar(window, orient=tk.HORIZONTAL,
+                                       length=300, mode='determinate', maximum=10, value=0)
 
-        self.emotionPB.progress.grid(row=1, column=1, padx=5, pady=5)
-        self.valencePB.progress.grid(row=2, column=1, padx=5, pady=5)
-        self.arousalPB.progress.grid(row=3, column=1, padx=5, pady=5)
-        self.dominancePB.progress.grid(row=4, column=1, padx=5, pady=5)
+        self.emotionPB.grid(row=1, column=1, padx=5, pady=5)
+        self.valencePB.grid(row=2, column=1, padx=5, pady=5)
+        self.arousalPB.grid(row=3, column=1, padx=5, pady=5)
+        self.dominancePB.grid(row=4, column=1, padx=5, pady=5)
 
         emotionLabel = tk.Label(window, text='Emotion').grid(row=1, column=0, padx=5, pady=5)
         valenceLabel = tk.Label(window, text='Valence').grid(row=2, column=0, padx=5, pady=5)
@@ -86,19 +90,19 @@ class App:
         dominanceLabel = tk.Label(window, text='Dominance').grid(row=4, column=0, padx=5, pady=5)
 
     def updateEmotion(self, value):
-        self.emotionPB.progress['value'] = value
+        self.emotionPB['value'] = value
         self.window.update_idletasks()
 
     def updateValence(self, value):
-        self.valencePB.progress['value'] = value
+        self.valencePB['value'] = value
         self.window.update_idletasks()
 
     def updateArousal(self, value):
-        self.arousalPB.progress['value'] = value
+        self.arousalPB['value'] = value
         self.window.update_idletasks()
 
     def updateDominance(self, value):
-        self.dominancePB.progress['value'] = value
+        self.dominancePB['value'] = value
         self.window.update_idletasks()
 
 
@@ -116,19 +120,6 @@ class MyVideoCapture:
     def __del__(self):
         if self.vid.isOpened():
             self.vid.release()
-
-
-class ProgressBar():
-    def __init__(self, window, pb_name):
-        self.window = window
-        # Create a progressbar widget
-        self.progress = Progressbar(window, orient=tk.HORIZONTAL,
-                                    length=300, mode='determinate', maximum=10, value=0)
-
-        # label = tk.Label(root, text='Emotion').grid(row=1, column=0, padx=5, pady=5)
-
-        # And a label for it
-        # label_1 = tk.Label(root, text=pb_name).pack()
 
     # def bar(self, root):
     #     import time
