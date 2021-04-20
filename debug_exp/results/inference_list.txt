@@ -1,1 +1,1 @@
-D:\GitProjects\AttentivenessRec\debug_exp\frames\frame.jpg Anticipation Engagement Esteem Happiness Pleasure Sympathy Yearning 5.9812 5.0378 6.6120
+D:\PyCharmProjects\AttentivenessRec\debug_exp\frames\frame.jpg Anticipation Confidence Disconnection Engagement Excitement Happiness 5.9689 5.1047 6.6295

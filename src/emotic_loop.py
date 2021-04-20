@@ -2,6 +2,7 @@ import threading
 import cv2
 from src.emotic_app import emotic
 
+
 class EmoticLoop(threading.Thread):
 
     def __init__(self, tid, fp, locks, gui):
@@ -17,6 +18,5 @@ class EmoticLoop(threading.Thread):
                 self.fp.release()
                 break
             self.locks[1].acquire()
-            self.gui.updateEmotionTextBox(emotic())
+            self.gui.updateEmotionTextBox(emotic()[0])
             self.locks[0].release()
-

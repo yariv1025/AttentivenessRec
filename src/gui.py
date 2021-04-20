@@ -41,6 +41,8 @@ class App:
 
         # create progress bars
         self.loadProgressBars(window)
+
+    def start(self):
         self.window.mainloop()
 
     def snapshot(self):
@@ -61,8 +63,10 @@ class App:
         self.window.after(self.delay, self.update)
 
     def updateEmotionTextBox(self, newText):
+        self.text.config(state=NORMAL)
+        self.text.delete('1.0', END)
         self.text.insert(tk.END, newText)
-        self.update()
+        self.text.config(state=DISABLED)
 
     def loadProgressBars(self, window):
 
@@ -93,18 +97,6 @@ class MyVideoCapture:
         self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
         self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-    # def get_frame(self):
-    #     if self.vid.isOpened():
-    #         ret, frame = self.vid.read()
-    #         if ret:
-    #             # Return a boolean success flag and the current frame converted to BGR
-    #             return (ret, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-    #         else:
-    #             return (ret, None)
-    #     else:
-    #         return (False, None)
-
-    # Release the video source when the object is destroyed
     def __del__(self):
         if self.vid.isOpened():
             self.vid.release()
@@ -116,7 +108,7 @@ class ProgressBar():
 
         # Create a progressbar widget
         self.progress = Progressbar(root, orient=tk.HORIZONTAL,
-                                    length=300, mode='determinate',  maximum=100, value=0)
+                                    length=300, mode='determinate', maximum=100, value=0)
 
         # label = tk.Label(root, text='Emotion').grid(row=1, column=0, padx=5, pady=5)
 
@@ -148,8 +140,3 @@ class ProgressBar():
     #     root.update_idletasks()
     #     time.sleep(1)
     #     self.progress['value'] = 80
-
-
-# if __name__ == '__main__':
-#     # Create a window and pass it to the Application object
-#     App(tk.Tk(), "AttentivnessRec")
