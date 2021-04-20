@@ -1,5 +1,9 @@
 import threading
+from random import randrange
+
 import cv2
+from mpmath import rand
+
 from src.emotic_app import emotic
 
 
@@ -18,5 +22,10 @@ class EmoticLoop(threading.Thread):
                 self.fp.release()
                 break
             self.locks[1].acquire()
-            self.gui.updateEmotionTextBox(emotic()[0])
+            results = emotic()
+            self.gui.updateEmotionTextBox(results[0])
+            self.gui.updateEmotion(randrange(11))
+            self.gui.updateValence(results[1][0])
+            self.gui.updateArousal(results[1][1])
+            self.gui.updateDominance(results[1][2])
             self.locks[0].release()

@@ -26,7 +26,7 @@ class App:
         self.canvas.grid(row=0, column=0, columnspan=3, padx=5, pady=5)
 
         self.text = tk.Text(window, height=5, width=80)
-        self.text.insert(tk.END, """Lorem""")
+        self.text.insert(tk.END, "")
         self.text.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
         self.text.config(state=DISABLED)
 
@@ -40,7 +40,7 @@ class App:
         self.update()
 
         # create progress bars
-        self.loadProgressBars(window)
+        self.createProgressBars(window)
 
     def start(self):
         self.window.mainloop()
@@ -68,22 +68,38 @@ class App:
         self.text.insert(tk.END, newText)
         self.text.config(state=DISABLED)
 
-    def loadProgressBars(self, window):
+    def createProgressBars(self, window):
 
-        emotionPB = ProgressBar(window, 'emotions: ')
-        valencePB = ProgressBar(window, 'valence: ')
-        arousalPB = ProgressBar(window, 'arousal: ')
-        dominancePB = ProgressBar(window, 'dominance: ')
+        self.emotionPB = ProgressBar(window, 'emotions: ')
+        self.valencePB = ProgressBar(window, 'valence: ')
+        self.arousalPB = ProgressBar(window, 'arousal: ')
+        self.dominancePB = ProgressBar(window, 'dominance: ')
 
-        emotionPB.progress.grid(row=1, column=1, padx=5, pady=5)
-        valencePB.progress.grid(row=2, column=1, padx=5, pady=5)
-        arousalPB.progress.grid(row=3, column=1, padx=5, pady=5)
-        dominancePB.progress.grid(row=4, column=1, padx=5, pady=5)
+        self.emotionPB.progress.grid(row=1, column=1, padx=5, pady=5)
+        self.valencePB.progress.grid(row=2, column=1, padx=5, pady=5)
+        self.arousalPB.progress.grid(row=3, column=1, padx=5, pady=5)
+        self.dominancePB.progress.grid(row=4, column=1, padx=5, pady=5)
 
         emotionLabel = tk.Label(window, text='Emotion').grid(row=1, column=0, padx=5, pady=5)
         valenceLabel = tk.Label(window, text='Valence').grid(row=2, column=0, padx=5, pady=5)
         arousalLabel = tk.Label(window, text='Arousal').grid(row=3, column=0, padx=5, pady=5)
         dominanceLabel = tk.Label(window, text='Dominance').grid(row=4, column=0, padx=5, pady=5)
+
+    def updateEmotion(self, value):
+        self.emotionPB.progress['value'] = value
+        self.window.update_idletasks()
+
+    def updateValence(self, value):
+        self.valencePB.progress['value'] = value
+        self.window.update_idletasks()
+
+    def updateArousal(self, value):
+        self.arousalPB.progress['value'] = value
+        self.window.update_idletasks()
+
+    def updateDominance(self, value):
+        self.dominancePB.progress['value'] = value
+        self.window.update_idletasks()
 
 
 class MyVideoCapture:
@@ -103,12 +119,11 @@ class MyVideoCapture:
 
 
 class ProgressBar():
-    def __init__(self, root, pb_name):
-        self.root = root
-
+    def __init__(self, window, pb_name):
+        self.window = window
         # Create a progressbar widget
-        self.progress = Progressbar(root, orient=tk.HORIZONTAL,
-                                    length=300, mode='determinate', maximum=100, value=0)
+        self.progress = Progressbar(window, orient=tk.HORIZONTAL,
+                                    length=300, mode='determinate', maximum=10, value=0)
 
         # label = tk.Label(root, text='Emotion').grid(row=1, column=0, padx=5, pady=5)
 
