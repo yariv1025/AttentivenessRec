@@ -1,9 +1,6 @@
 import threading
 from random import randrange
-
 import cv2
-from mpmath import rand
-
 from src.emotic_app import emotic
 
 

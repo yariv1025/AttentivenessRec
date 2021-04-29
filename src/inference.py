@@ -22,7 +22,7 @@ def process_images(context_norm, body_norm, image_context_path=None, image_conte
     raise ValueError('both body image and bounding box cannot be none. Please specify one of the two')
 
   if image_context_path is not None:
-    image_context =  cv2.cvtColor(cv2.imread(image_context_path), cv2.COLOR_BGR2RGB)
+    image_context = cv2.cvtColor(cv2.imread(image_context_path), cv2.COLOR_RGB2BGR)
   
   if bbox is not None:
     image_body = image_context[bbox[1]:bbox[3],bbox[0]:bbox[2]].copy()

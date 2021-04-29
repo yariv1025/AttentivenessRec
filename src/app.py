@@ -1,6 +1,4 @@
 from src.FrameProvider import FrameProvider
-from src.emotic_app import emotic
-from src.FrameDisplay import FrameDisplay
 from src.FrameSaver import FrameSaver
 import threading
 from src.emotic_loop import EmoticLoop

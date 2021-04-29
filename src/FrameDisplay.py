@@ -1,7 +1,7 @@
 import cv2
 import threading
 
-
+# TODO: delete this class?
 class FrameDisplay(threading.Thread):
 
     def __init__(self, tid, fp):

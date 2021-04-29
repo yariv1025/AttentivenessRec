@@ -1,8 +1,6 @@
-import os
-
-import torch
 from emotic_app import emotic
 
+# TODO: delete this file
 
 def create_model():
     emotic()
@@ -11,4 +9,3 @@ def create_model():
 
 def get_model():
     print(emotic())
-
