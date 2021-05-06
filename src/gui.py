@@ -110,10 +110,22 @@ class App:
         self.arousalPB.grid(row=3, column=1, padx=5, pady=5)
         self.dominancePB.grid(row=4, column=1, padx=5, pady=5)
 
-        emotionLabel = tk.Label(window, text='Emotion').grid(row=1, column=0, padx=5, pady=5)
-        valenceLabel = tk.Label(window, text='Valence').grid(row=2, column=0, padx=5, pady=5)
-        arousalLabel = tk.Label(window, text='Arousal').grid(row=3, column=0, padx=5, pady=5)
-        dominanceLabel = tk.Label(window, text='Dominance').grid(row=4, column=0, padx=5, pady=5)
+        self.emotionText = tk.StringVar()
+        self.emotionText.set('Emotion (%0)')
+
+        self.valenceText = tk.StringVar()
+        self.valenceText.set('Valence (%0)')
+
+        self.arousalText = tk.StringVar()
+        self.arousalText.set('Arousal (%0)')
+
+        self.dominanceText = tk.StringVar()
+        self.dominanceText.set('Dominance (%0)')
+
+        self.emotionLabel = tk.Label(window, textvariable=self.emotionText).grid(row=1, column=0, padx=5, pady=5)
+        self.valenceLabel = tk.Label(window, textvariable=self.valenceText).grid(row=2, column=0, padx=5, pady=5)
+        self.arousalLabel = tk.Label(window, textvariable=self.arousalText).grid(row=3, column=0, padx=5, pady=5)
+        self.dominanceLabel = tk.Label(window, textvariable=self.dominanceText).grid(row=4, column=0, padx=5, pady=5)
 
     def updateEmotion(self, value):
         """"
@@ -121,6 +133,7 @@ class App:
         :param: value - number.
         """
         self.emotionPB['value'] = value
+        self.emotionText.set('Emotion (%{})'.format(value * 10))
         self.window.update_idletasks()
 
     def updateValence(self, value):
@@ -129,6 +142,7 @@ class App:
         :param: value - number.
         """
         self.valencePB['value'] = value
+        self.valenceText.set('Valence (%{:.0f})'.format(value * 10))
         self.window.update_idletasks()
 
     def updateArousal(self, value):
@@ -137,6 +151,7 @@ class App:
         :param: value - number.
         """
         self.arousalPB['value'] = value
+        self.arousalText.set('Arousal (%{:.0f})'.format(value * 10))
         self.window.update_idletasks()
 
     def updateDominance(self, value):
@@ -145,6 +160,7 @@ class App:
         :param: value - number.
         """
         self.dominancePB['value'] = value
+        self.dominanceText.set('Dominance (%{:.0f})'.format(value * 10))
         self.window.update_idletasks()
 
     def emotionBarCalc(self, emotions):
@@ -195,29 +211,3 @@ class MyVideoCapture:
         """
         if self.vid.isOpened():
             self.vid.release()
-
-    # def bar(self, root):
-    #     import time
-    #     self.progress['value'] = 20
-    #     root.update_idletasks()
-    #     time.sleep(1)
-    #
-    #     self.progress['value'] = 40
-    #     root.update_idletasks()
-    #     time.sleep(1)
-    #
-    #     self.progress['value'] = 50
-    #     root.update_idletasks()
-    #     time.sleep(1)
-    #
-    #     self.progress['value'] = 60
-    #     root.update_idletasks()
-    #     time.sleep(1)
-    #
-    #     self.progress['value'] = 80
-    #     root.update_idletasks()
-    #     time.sleep(1)
-    #     self.progress['value'] = 100
-    #     root.update_idletasks()
-    #     time.sleep(1)
-    #     self.progress['value'] = 80
