@@ -5,7 +5,8 @@ from tkinter.ttk import *
 import cv2
 import PIL.Image, PIL.ImageTk
 import time
-
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class App:
     """"
@@ -126,6 +127,16 @@ class App:
         self.valenceLabel = tk.Label(window, textvariable=self.valenceText).grid(row=2, column=0, padx=5, pady=5)
         self.arousalLabel = tk.Label(window, textvariable=self.arousalText).grid(row=3, column=0, padx=5, pady=5)
         self.dominanceLabel = tk.Label(window, textvariable=self.dominanceText).grid(row=4, column=0, padx=5, pady=5)
+
+    def addCharts(self, window):
+        pass
+        # figure = plt.Figure(figsize=(6, 5), dpi=100)
+        # ax = figure.add_subplot(111)
+        # chart_type = FigureCanvasTkAgg(figure, window)
+        # chart_type.get_tk_widget().pack()
+        # df = df[['First Column', 'Second Column']].groupby('First Column').sum()
+        # df.plot(kind='Chart Type such as bar', legend=True, ax=ax)
+        # ax.set_title('The Title for your chart')
 
     def updateEmotion(self, value):
         """"
