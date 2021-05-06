@@ -105,6 +105,29 @@ class App:
         self.dominancePB['value'] = value
         self.window.update_idletasks()
 
+    def emotionBarCalc(self, emotions):
+        bar = 5
+
+        for emotion in emotions:
+            bar += self.emotionValue(emotion)
+
+        return max(0, min(10, bar))
+
+    def emotionValue(self, emotion):
+        pos = ['Affection', 'Anticipation', 'Confidence', 'Engagement', 'Esteem', 'Excitement',
+               'Happiness', 'Peace', 'Pleasure', 'Surprise', 'Sympathy']
+
+        neg = ['Anger', 'Annoyance', 'Aversion', 'Disapproval', 'Disconnection', 'Disquietment',
+               'Doubt/Confusion', 'Embarrassment', 'Fatigue', 'Fear', 'Pain', 'Sadness',
+               'Sensitivity', 'Suffering', 'Yearning']
+
+        if emotion in pos:
+            return 1
+        elif emotion in neg:
+            return -1
+        else:
+            raise ValueError("Emotion not found!")
+
 
 class MyVideoCapture:
     def __init__(self, video_source=0):

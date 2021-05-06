@@ -24,7 +24,7 @@ class EmoticLoop(threading.Thread):
             self.locks[1].acquire()
             results = emotic()
             self.gui.updateEmotionTextBox(results[0])
-            self.gui.updateEmotion(randrange(11))
+            self.gui.updateEmotion(self.gui.emotionBarCalc(results[0]))
             self.gui.updateValence(results[1][0])
             self.gui.updateArousal(results[1][1])
             self.gui.updateDominance(results[1][2])
