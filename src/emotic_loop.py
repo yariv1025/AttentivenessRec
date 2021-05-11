@@ -1,10 +1,9 @@
 import threading
 from datetime import datetime
-
 import cv2
 import matplotlib.pyplot as plt
 from src.emotic_app import emotic
-from src.statistics_data_loader import Statistics
+
 
 
 class EmoticLoop(threading.Thread):
@@ -17,11 +16,6 @@ class EmoticLoop(threading.Thread):
         self.gui = gui
 
     def run(self):
-        indexes = []
-        values = []
-        index = 0
-
-        statistics = Statistics()
         start_time = datetime.now()
 
         while self.fp.isOpened():
@@ -35,13 +29,11 @@ class EmoticLoop(threading.Thread):
 
             self.gui.updateEmotionTextBox(results[0])
             value = self.gui.emotionBarCalc(results[0])
-            statistics.addValue(int(seconds), value)
+            self.gui.statistics.addValue(int(seconds), value)
+            self.gui.addCharts()
 
             self.gui.updateEmotion(value)
             self.gui.updateValence(results[1][0])
             self.gui.updateArousal(results[1][1])
             self.gui.updateDominance(results[1][2])
             self.locks[0].release()
-
-        plt.plot(indexes, values)
-        plt.show()
