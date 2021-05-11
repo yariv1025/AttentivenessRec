@@ -1,5 +1,6 @@
 # # attentive-gui
 import tkinter as tk
+from tkinter import messagebox
 from tkinter import *
 from tkinter.ttk import *
 import cv2
@@ -15,13 +16,15 @@ class App:
     Create our GUI app.
     """
 
-    def __init__(self, window, window_title, statistics, video_stream=None, video_source=0,):
+    def __init__(self, window, window_title, statistics, exit_flag, video_stream=None, video_source=0):
         """"
         :param: window - tk.Tk() object.
         :param: window_title - String - our GUI title.
         :param: video_stream - frameProvider object.
         :param: video_source - zero by default to import video stream from our computer camera.
         """
+        self.exit_flag = exit_flag
+
         self.window = window
         self.window.title(window_title)
 
@@ -41,8 +44,16 @@ class App:
 
         self.text = tk.Text(window, height=5, width=80)
         self.text.insert(tk.END, "")
-        self.text.grid(row=5, column=0, columnspan=3, padx=5, pady=5)
+        self.text.grid(row=6, column=0, columnspan=3, padx=5, pady=5)
         self.text.config(state=DISABLED)
+        self.face = False
+
+        # detection label
+        self.label_text = tk.StringVar()
+        self.label_text.set('')
+        self.face_detection_label = tk.Label(self.window, textvariable=self.label_text).grid(row=1, column=0,
+                                                                                             columnspan=3, padx=5,
+                                                                                             pady=5)
 
         # After it is called once, the update method will be automatically called every delay milliseconds
         self.delay = 1
@@ -50,15 +61,29 @@ class App:
 
         # create progress bars
         self.createProgressBars(window)
+
+        # create graph
         self.statistics = statistics
         self.addCharts()
 
+        self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     def start(self):
         """"
         Create our GUI loop (Thread).
         """
         self.window.mainloop()
+
+    def on_closing(self):
+        """
+        quit from program
+        """
+        if messagebox.askokcancel("Quit", "Do you want to quit?"):
+            self.exit_flag = False
+            self.vid.release()
+            self.figure.savefig("fig.pdf", bbox_inches='tight')
+            self.window.destroy()
+            # self.window.quit()
 
     def snapshot(self):
         """"
@@ -75,11 +100,17 @@ class App:
         """
         # Get a frame from the video source
         frame = self.vid.get_frame()
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        if True:
-            self.photo = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(frame))
-            self.canvas.create_image(0, 0, image=self.photo, anchor=tk.NW)
 
+        if self.face:
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            self.label_text.set('')
+        else:
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            text = 'Face not detected!'
+            self.label_text.set(text)
+
+        self.photo = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(frame))
+        self.canvas.create_image(0, 0, image=self.photo, anchor=tk.NW)
         self.window.after(self.delay, self.update)
 
     def updateEmotionTextBox(self, newText):
@@ -106,10 +137,10 @@ class App:
         self.dominancePB = Progressbar(window, orient=tk.HORIZONTAL,
                                        length=300, mode='determinate', maximum=10, value=0)
 
-        self.emotionPB.grid(row=1, column=1, padx=5, pady=5)
-        self.valencePB.grid(row=2, column=1, padx=5, pady=5)
-        self.arousalPB.grid(row=3, column=1, padx=5, pady=5)
-        self.dominancePB.grid(row=4, column=1, padx=5, pady=5)
+        self.emotionPB.grid(row=2, column=1, padx=5, pady=5)
+        self.valencePB.grid(row=3, column=1, padx=5, pady=5)
+        self.arousalPB.grid(row=4, column=1, padx=5, pady=5)
+        self.dominancePB.grid(row=5, column=1, padx=5, pady=5)
 
         self.emotionText = tk.StringVar()
         self.emotionText.set('Emotion (%0)')
@@ -123,25 +154,27 @@ class App:
         self.dominanceText = tk.StringVar()
         self.dominanceText.set('Dominance (%0)')
 
-        self.emotionLabel = tk.Label(window, textvariable=self.emotionText).grid(row=1, column=0, padx=5, pady=5)
-        self.valenceLabel = tk.Label(window, textvariable=self.valenceText).grid(row=2, column=0, padx=5, pady=5)
-        self.arousalLabel = tk.Label(window, textvariable=self.arousalText).grid(row=3, column=0, padx=5, pady=5)
-        self.dominanceLabel = tk.Label(window, textvariable=self.dominanceText).grid(row=4, column=0, padx=5, pady=5)
+        self.emotionLabel = tk.Label(window, textvariable=self.emotionText).grid(row=2, column=0, padx=5, pady=5)
+        self.valenceLabel = tk.Label(window, textvariable=self.valenceText).grid(row=3, column=0, padx=5, pady=5)
+        self.arousalLabel = tk.Label(window, textvariable=self.arousalText).grid(row=4, column=0, padx=5, pady=5)
+        self.dominanceLabel = tk.Label(window, textvariable=self.dominanceText).grid(row=5, column=0, padx=5, pady=5)
 
     def addCharts(self):
         """
-        Adding chart to our gui.
-        :param: window - tk.Tk() object.
+        Adding emotion levels chart to our gui.
         """
         figure = plt.Figure(figsize=(4, 4), dpi=100)
-        ax = figure.add_subplot(111)
 
         chart_type = FigureCanvasTkAgg(figure, self.window)
-        chart_type.get_tk_widget().grid(row=1, column=2, rowspan=4, padx=5, pady=5)
+        chart_type.get_tk_widget().grid(row=2, column=2, rowspan=4, padx=5, pady=5)
+
+        ax = figure.add_subplot(111)
+        ax.set_title('Emotion tracking')
+        ax.set_ylim([0, 10])
 
         data_frame = self.statistics.get_data_frame()
         data_frame.plot(kind='line', legend=True, ax=ax)
-        ax.set_title('Emotion tracking')
+
 
     def updateEmotion(self, value):
         """"
@@ -181,7 +214,6 @@ class App:
 
     def emotionBarCalc(self, emotions):
         bar = 5
-
         for emotion in emotions:
             bar += self.emotionValue(emotion)
 
