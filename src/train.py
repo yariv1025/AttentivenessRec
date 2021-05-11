@@ -184,7 +184,7 @@ def train_emotic(result_path, model_path, train_log_path, val_log_path, ind2cat,
         param.requires_grad = True
     
     device = torch.device("cuda:%s" %(str(args.gpu)) if torch.cuda.is_available() else "cpu")
-    opt = optim.Adam((list(emotic_model.parameters()) + list(model_context.parameters()) + list(model_body.parameters())), lr=args.learning_rate, weight_decay=args.weight_decay)
+    opt = optim.SparseAdam((list(emotic_model.parameters()) + list(model_context.parameters()) + list(model_body.parameters())), lr=args.learning_rate)
     scheduler = StepLR(opt, step_size=7, gamma=0.1)
     disc_loss = DiscreteLoss(args.discrete_loss_weight_type, device)
     if args.continuous_loss_type == 'Smooth L1':

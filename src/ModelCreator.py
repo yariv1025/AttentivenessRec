@@ -9,3 +9,5 @@ def create_model():
 
 def get_model():
     print(emotic())
+
+get_model()
