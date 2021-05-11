@@ -54,4 +54,4 @@ class FrameSaver(threading.Thread):
                             faces[3]))
 
             self.locks[1].release()
-            time.sleep(5)
+            time.sleep(1)

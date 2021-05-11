@@ -5,13 +5,17 @@ from tkinter.ttk import *
 import cv2
 import PIL.Image, PIL.ImageTk
 import time
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import src.statistics_data_loader
 
 
 class App:
     """"
     Create our GUI app.
     """
-    def __init__(self, window, window_title, video_stream=None, video_source=0):
+
+    def __init__(self, window, window_title, statistics, video_stream=None, video_source=0,):
         """"
         :param: window - tk.Tk() object.
         :param: window_title - String - our GUI title.
@@ -37,13 +41,8 @@ class App:
 
         self.text = tk.Text(window, height=5, width=80)
         self.text.insert(tk.END, "")
-        self.text.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
+        self.text.grid(row=5, column=0, columnspan=3, padx=5, pady=5)
         self.text.config(state=DISABLED)
-
-        # # Button that lets the user take a snapshot
-        # self.btn_snapshot = tk.Button(window, text="Snapshot", width=50, command=self.snapshot)
-        # self.btn_snapshot.pack(anchor=tk.CENTER, expand=True)
-        # self.btn_snapshot.grid(row=1, column=2, rowspan=3, padx=5, pady=5)
 
         # After it is called once, the update method will be automatically called every delay milliseconds
         self.delay = 1
@@ -51,6 +50,9 @@ class App:
 
         # create progress bars
         self.createProgressBars(window)
+        self.statistics = statistics
+        self.addCharts()
+
 
     def start(self):
         """"
@@ -71,7 +73,6 @@ class App:
         """"
         Update our video streaming.
         """
-
         # Get a frame from the video source
         frame = self.vid.get_frame()
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -126,6 +127,21 @@ class App:
         self.valenceLabel = tk.Label(window, textvariable=self.valenceText).grid(row=2, column=0, padx=5, pady=5)
         self.arousalLabel = tk.Label(window, textvariable=self.arousalText).grid(row=3, column=0, padx=5, pady=5)
         self.dominanceLabel = tk.Label(window, textvariable=self.dominanceText).grid(row=4, column=0, padx=5, pady=5)
+
+    def addCharts(self):
+        """
+        Adding chart to our gui.
+        :param: window - tk.Tk() object.
+        """
+        figure = plt.Figure(figsize=(4, 4), dpi=100)
+        ax = figure.add_subplot(111)
+
+        chart_type = FigureCanvasTkAgg(figure, self.window)
+        chart_type.get_tk_widget().grid(row=1, column=2, rowspan=4, padx=5, pady=5)
+
+        data_frame = self.statistics.get_data_frame()
+        data_frame.plot(kind='line', legend=True, ax=ax)
+        ax.set_title('Emotion tracking')
 
     def updateEmotion(self, value):
         """"
@@ -191,6 +207,7 @@ class MyVideoCapture:
     """"
     Used for import video stream from our computer camera.
     """
+
     def __init__(self, video_source=0):
         """"
         Constructor - create 'vid' variable = video stream.
