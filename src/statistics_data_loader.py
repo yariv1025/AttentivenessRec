@@ -14,7 +14,7 @@ class Statistics(object):
 
     def get_data_frame(self):
         data = {'Time': self.times,
-                'Values': self.values
+                'Emotion levels': self.values
                 }
-        df = DataFrame(data, columns=['Time', 'Values']).groupby('Time').sum()
+        df = DataFrame(data, columns=['Time', 'Emotion levels']).groupby('Time').sum()
         return df
