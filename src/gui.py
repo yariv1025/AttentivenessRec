@@ -1,14 +1,12 @@
-# # attentive-gui
-import tkinter as tk
-from tkinter import messagebox
-from tkinter import *
-from tkinter.ttk import *
 import cv2
-import PIL.Image, PIL.ImageTk
 import time
+import tkinter as tk
+from tkinter import *
+from tkinter import messagebox
+from tkinter.ttk import *
+import PIL.Image, PIL.ImageTk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import src.statistics_data_loader
 
 
 class App:
@@ -16,27 +14,24 @@ class App:
     Create our GUI app.
     """
 
-    def __init__(self, window, window_title, statistics, exit_flag, video_stream=None, video_source=0):
+    def __init__(self, window, window_title, statistics, exit_flag, video_stream):
         """"
-        :param: window - tk.Tk() object.
-        :param: window_title - String - our GUI title.
-        :param: video_stream - frameProvider object.
-        :param: video_source - zero by default to import video stream from our computer camera.
+        Creating the GUI for the app.
+
+        :param window: tk.Tk() object.
+        :param window_title: String - our GUI title.
+        :param statistics: a Statistics object.
+        :param exit_flag: a boolean flag for ending the run loop.
+        :param video_stream: frameProvider object.
         """
         self.exit_flag = exit_flag
 
         self.window = window
         self.window.title(window_title)
 
-        # TODO: Change this logic - use only with video_stream.
-        if not video_stream:
-            self.video_source = video_source
-            # open video source (by default this will try to open the computer webcam)
-            self.vid = MyVideoCapture(self.video_source)
-        else:
-            self.vid = video_stream
-            self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
-            self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        self.vid = video_stream
+        self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
+        self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
         # Create a canvas that can fit the above video source size
         self.canvas = tk.Canvas(window, width=self.width, height=self.height)
@@ -65,7 +60,7 @@ class App:
         # create graph
         self.statistics = statistics
         self.addCharts()
-
+        self.figure = None
         self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     def start(self):
@@ -83,7 +78,6 @@ class App:
             self.vid.release()
             self.figure.savefig("fig.pdf", bbox_inches='tight')
             self.window.destroy()
-            # self.window.quit()
 
     def snapshot(self):
         """"
@@ -175,7 +169,6 @@ class App:
         data_frame = self.statistics.get_data_frame()
         data_frame.plot(kind='line', legend=True, ax=ax)
 
-
     def updateEmotion(self, value):
         """"
         Update Emotion bar value.
@@ -213,6 +206,13 @@ class App:
         self.window.update_idletasks()
 
     def emotionBarCalc(self, emotions):
+        """
+        Function for calculate the attentive levels of the subject based on emotion recognition.
+        The function return value in range 0 to 10. the higher the number, the higher the level of attention.
+
+        :param emotions: list of emotions
+        :return: the subject's level of attention in scale of 0 to 10
+        """
         bar = 5
         for emotion in emotions:
             bar += self.emotionValue(emotion)
@@ -220,6 +220,12 @@ class App:
         return max(0, min(10, bar))
 
     def emotionValue(self, emotion):
+        """
+        The function receives an emotion and returns it's value.
+
+        :param emotion: an emotion
+        :return: 1 if positive emotion, else -1.
+        """
         pos = ['Affection', 'Anticipation', 'Confidence', 'Engagement', 'Esteem', 'Excitement',
                'Happiness', 'Peace', 'Pleasure', 'Surprise', 'Sympathy']
 
@@ -233,30 +239,3 @@ class App:
             return -1
         else:
             raise ValueError("Emotion not found!")
-
-
-class MyVideoCapture:
-    """"
-    Used for import video stream from our computer camera.
-    """
-
-    def __init__(self, video_source=0):
-        """"
-        Constructor - create 'vid' variable = video stream.
-        :param: video_source - Zero by default to import video stream from our computer camera.
-        """
-        # Open the video source
-        self.vid = cv2.VideoCapture(video_source)
-        if not self.vid.isOpened():
-            raise ValueError("Unable to open video source", video_source)
-
-        # Get video source width and height
-        self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
-        self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
-
-    def __del__(self):
-        """"
-        By calling this method we close the video streaming.
-        """
-        if self.vid.isOpened():
-            self.vid.release()
