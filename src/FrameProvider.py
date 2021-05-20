@@ -1,13 +1,16 @@
-import os
 import cv2
-from mtcnn import mtcnn
 
 
 class FrameProvider(cv2.VideoCapture):
+    """
+    The FrameProvider class role is to provide frames from a video stream so that the app will be able
+    to send the frames to the ANN models.
+    """
 
     def __init__(self, param):
         """
-        Constructor:
+        Constructor
+
         :param param - Video stream source.
         :return Boolean - If stream successfully initialized.
         """
