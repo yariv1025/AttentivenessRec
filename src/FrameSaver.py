@@ -6,12 +6,17 @@ from src.FaceDetector import FaceDetector
 
 
 class FrameSaver(threading.Thread):
+    """
+    This class job is to get frames from the FrameProvider class and store them in the storage so that the ANN will be
+    able to access it.
+    """
 
     def __init__(self, tid, fp, locks, gui, exit_flag):
         """
-        Initializing frame saver.
-        :param tid - thread id number
-        :param fp - the FrameProvider object
+        Creating FrameSaver object.
+
+        :param tid: thread id number
+        :param fp: the FrameProvider object
         """
         self.exit_flag = exit_flag
 
@@ -22,11 +27,22 @@ class FrameSaver(threading.Thread):
         self.locks[1].acquire()
         self.fd = FaceDetector()
         self.gui = gui
+        self.main_path = os.path.dirname(os.getcwd())
+        self.frames_path = self.main_path + '\debug_exp\\frames'
+        if not os.path.exists(self.frames_path):
+            os.makedirs(self.frames_path)
+            print("Directory frames has been created.")
 
     def saveFrame(self, frame, faces=None):
-        path = 'D:\GitProjects\AttentivenessRec\debug_exp\\frames'
-        img_path = os.path.join(os.path.join(path, 'frame.jpg'))
-        cv2.imwrite(os.path.join(path, 'frame.jpg'), frame)
+        """
+        The main function for storing the images in the memory.
+
+        :param frame: the image to be stored.
+        :param faces: The location of the faces in the image.
+        """
+
+        img_path = os.path.join(os.path.join(self.frames_path, 'frame.jpg'))
+        cv2.imwrite(os.path.join(self.frames_path, 'frame.jpg'), frame)
 
         if faces:
             x1 = faces[0]['box'][0]
@@ -38,7 +54,7 @@ class FrameSaver(threading.Thread):
 
         faces = [x1, y1, x2, y2]
 
-        with open('D:\GitProjects\AttentivenessRec\debug_exp\inference_file.txt', 'w') as f:
+        with open(self.main_path + '\debug_exp\inference_file.txt', 'w') as f:
             f.write(
                 img_path + ' ' + str(faces[0]) + ' ' + str(faces[1]) + ' ' + str(faces[2]) + ' ' + str(
                     faces[3]))
@@ -60,7 +76,6 @@ class FrameSaver(threading.Thread):
                 faces = self.fd.has_face(frame)
 
                 if faces:
-                    # TODO: Perform check - if frame directory dosent exist -> create
                     self.saveFrame(frame, faces)
                     self.gui.face = True
                     print("img saved")
