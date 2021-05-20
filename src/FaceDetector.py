@@ -23,4 +23,5 @@ class FaceDetector(MTCNN):
         :param img: image to process.
         :return: boolean
         """
-        return len(self.get_face(img)) > 0
+        faces = self.get_face(img)
+        return False if len(faces) == 0 else faces
