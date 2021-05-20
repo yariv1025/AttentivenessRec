@@ -9,10 +9,10 @@ class FrameProvider(cv2.VideoCapture):
 
     def __init__(self, param):
         """
-        Constructor
+        Creating a FrameProvider object.
 
-        :param param - Video stream source.
-        :return Boolean - If stream successfully initialized.
+        :param param: Video stream source.
+        :return Boolean: If stream successfully initialized.
         """
         super().__init__(param)
         if not self.isOpened():
