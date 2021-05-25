@@ -1,5 +1,6 @@
 from pandas import DataFrame
-
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
 
 class Statistics(object):
     """
@@ -34,3 +35,14 @@ class Statistics(object):
                 }
         df = DataFrame(data, columns=['Time', 'Attention levels']).groupby('Time').sum()
         return df
+
+    def savetoPDF(self):
+        df = self.get_data_frame()
+        fig, ax = plt.subplots(figsize=(12, 4))
+        ax.axis('tight')
+        ax.axis('off')
+        the_table = ax.table(cellText=df.values, colLabels=df.columns, loc='center')
+
+        pdf = PdfPages("Summary.pdf")
+        pdf.savefig(fig, bbox_inches='tight')
+        pdf.close()

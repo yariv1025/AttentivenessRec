@@ -77,6 +77,7 @@ class App:
         """
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             self.exit_flag = False
+            self.statistics.savetoPDF()
             # self.vid.release()
             # # self.figure.savefig("fig.pdf", bbox_inches='tight')
             self.window.destroy()
