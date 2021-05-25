@@ -7,6 +7,7 @@ from tkinter.ttk import *
 import PIL.Image, PIL.ImageTk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from src.AttentionCalculator import AttentionCalc
 
 
 class App:
@@ -28,6 +29,8 @@ class App:
 
         self.window = window
         self.window.title(window_title)
+        self.window.configure(bg='white')
+        self.window.resizable(width=False, height=False)
 
         self.vid = video_stream
         self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
@@ -42,13 +45,19 @@ class App:
         self.text.grid(row=6, column=0, columnspan=3, padx=5, pady=5)
         self.text.config(state=DISABLED)
         self.face = False
+        self.cont_weights = [0.3, 0.3, 0.4]
+        self.param = 0.6
+        self.alpha = 0.3
+        self.attention_calc = AttentionCalc(self.cont_weights, self.param, self.alpha)
 
         # detection label
         self.label_text = tk.StringVar()
         self.label_text.set('')
-        self.face_detection_label = tk.Label(self.window, textvariable=self.label_text).grid(row=1, column=0,
-                                                                                             columnspan=3, padx=5,
-                                                                                             pady=5)
+        self.face_detection_label = tk.Label(self.window, textvariable=self.label_text, bg='white').grid(row=1,
+                                                                                                         column=0,
+                                                                                                         columnspan=3,
+                                                                                                         padx=5,
+                                                                                                         pady=5)
 
         # After it is called once, the update method will be automatically called every delay milliseconds
         self.delay = 1
@@ -122,8 +131,8 @@ class App:
         Creating the progress bars and all labels.
         :param: window - tk.TK() object
         """
-        self.emotionPB = Progressbar(window, orient=tk.HORIZONTAL,
-                                     length=300, mode='determinate', maximum=10, value=0)
+        self.attentionPB = Progressbar(window, orient=tk.HORIZONTAL,
+                                       length=300, mode='determinate', maximum=10, value=0)
         self.valencePB = Progressbar(window, orient=tk.HORIZONTAL,
                                      length=300, mode='determinate', maximum=10, value=0)
         self.arousalPB = Progressbar(window, orient=tk.HORIZONTAL,
@@ -131,13 +140,13 @@ class App:
         self.dominancePB = Progressbar(window, orient=tk.HORIZONTAL,
                                        length=300, mode='determinate', maximum=10, value=0)
 
-        self.emotionPB.grid(row=2, column=1, padx=5, pady=5)
+        self.attentionPB.grid(row=2, column=1, padx=5, pady=5)
         self.valencePB.grid(row=3, column=1, padx=5, pady=5)
         self.arousalPB.grid(row=4, column=1, padx=5, pady=5)
         self.dominancePB.grid(row=5, column=1, padx=5, pady=5)
 
-        self.emotionText = tk.StringVar()
-        self.emotionText.set('Emotion (%0)')
+        self.attentionText = tk.StringVar()
+        self.attentionText.set('Attention (%0)')
 
         self.valenceText = tk.StringVar()
         self.valenceText.set('Valence (%0)')
@@ -148,14 +157,18 @@ class App:
         self.dominanceText = tk.StringVar()
         self.dominanceText.set('Dominance (%0)')
 
-        self.emotionLabel = tk.Label(window, textvariable=self.emotionText).grid(row=2, column=0, padx=5, pady=5)
-        self.valenceLabel = tk.Label(window, textvariable=self.valenceText).grid(row=3, column=0, padx=5, pady=5)
-        self.arousalLabel = tk.Label(window, textvariable=self.arousalText).grid(row=4, column=0, padx=5, pady=5)
-        self.dominanceLabel = tk.Label(window, textvariable=self.dominanceText).grid(row=5, column=0, padx=5, pady=5)
+        self.attentionLabel = tk.Label(window, textvariable=self.attentionText, bg='white').grid(row=2, column=0,
+                                                                                                 padx=5, pady=5)
+        self.valenceLabel = tk.Label(window, textvariable=self.valenceText, bg='white').grid(row=3, column=0, padx=5,
+                                                                                             pady=5)
+        self.arousalLabel = tk.Label(window, textvariable=self.arousalText, bg='white').grid(row=4, column=0, padx=5,
+                                                                                             pady=5)
+        self.dominanceLabel = tk.Label(window, textvariable=self.dominanceText, bg='white').grid(row=5, column=0,
+                                                                                                 padx=5, pady=5)
 
     def addCharts(self):
         """
-        Adding emotion levels chart to our gui.
+        Adding attention levels chart to our gui.
         """
         figure = plt.Figure(figsize=(4, 4), dpi=100)
 
@@ -163,19 +176,19 @@ class App:
         chart_type.get_tk_widget().grid(row=2, column=2, rowspan=4, padx=5, pady=5)
 
         ax = figure.add_subplot(111)
-        ax.set_title('Emotion tracking')
+        ax.set_title('Attention tracking')
         ax.set_ylim([0, 10])
 
         data_frame = self.statistics.get_data_frame()
         data_frame.plot(kind='line', legend=True, ax=ax)
 
-    def updateEmotion(self, value):
+    def updateAttention(self, value):
         """"
-        Update Emotion bar value.
+        Update Attention bar value.
         :param: value - number.
         """
-        self.emotionPB['value'] = value
-        self.emotionText.set('Emotion (%{})'.format(value * 10))
+        self.attentionPB['value'] = value
+        self.attentionText.set('Attention (%{:.2f})'.format(value * 10))
         self.window.update_idletasks()
 
     def updateValence(self, value):
@@ -205,37 +218,10 @@ class App:
         self.dominanceText.set('Dominance (%{:.0f})'.format(value * 10))
         self.window.update_idletasks()
 
-    def emotionBarCalc(self, emotions):
+    def attentionBarCalc(self, results):
         """
-        Function for calculate the attentive levels of the subject based on emotion recognition.
-        The function return value in range 0 to 10. the higher the number, the higher the level of attention.
-
-        :param emotions: list of emotions
-        :return: the subject's level of attention in scale of 0 to 10
+        Calculte the Attention level of the subject
+        :param results: the results from the ANN model
+        :return: the attention level
         """
-        bar = 5
-        for emotion in emotions:
-            bar += self.emotionValue(emotion)
-
-        return max(0, min(10, bar))
-
-    def emotionValue(self, emotion):
-        """
-        The function receives an emotion and returns it's value.
-
-        :param emotion: an emotion
-        :return: 1 if positive emotion, else -1.
-        """
-        pos = ['Affection', 'Anticipation', 'Confidence', 'Engagement', 'Esteem', 'Excitement',
-               'Happiness', 'Peace', 'Pleasure', 'Surprise', 'Sympathy']
-
-        neg = ['Anger', 'Annoyance', 'Aversion', 'Disapproval', 'Disconnection', 'Disquietment',
-               'Doubt/Confusion', 'Embarrassment', 'Fatigue', 'Fear', 'Pain', 'Sadness',
-               'Sensitivity', 'Suffering', 'Yearning']
-
-        if emotion in pos:
-            return 1
-        elif emotion in neg:
-            return -1
-        else:
-            raise ValueError("Emotion not found!")
+        return self.attention_calc.attentionCalc(results)

@@ -30,7 +30,7 @@ class Statistics(object):
         :return: Dataframe object of the attention levels.
         """
         data = {'Time': self.times,
-                'Emotion levels': self.values
+                'Attention levels': self.values
                 }
-        df = DataFrame(data, columns=['Time', 'Emotion levels']).groupby('Time').sum()
+        df = DataFrame(data, columns=['Time', 'Attention levels']).groupby('Time').sum()
         return df

@@ -74,15 +74,6 @@ def infer(context_norm, body_norm, ind2cat, ind2vad, device, thresholds, models,
   for i in range(len(bool_cat_pred)):
     if bool_cat_pred[i] == True:
       cat_emotions.append(ind2cat[i])
-
-  # if to_print == True:
-  #   print ('\n Image predictions')
-  #   print ('Continuous Dimnesions Predictions')
-  #   for i in range(len(pred_cont)):
-  #     print ('Continuous %10s %.5f' %(ind2vad[i], 10*pred_cont[i]))
-  #   print ('Categorical Emotion Predictions')
-  #   for emotion in cat_emotions:
-  #     print ('Categorical %16s' %(emotion))
   
   return cat_emotions, 10*pred_cont
 
