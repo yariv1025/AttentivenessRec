@@ -17,6 +17,8 @@
 .idea/
 .EmoticDB/
 .github/workflows/python-package-conda.yml
+debug_exp/inference_file.txt
+debug_exp/results/inference_list.txt
 
 # Generated files
 .idea/**/contentModel.xml
