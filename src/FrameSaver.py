@@ -11,14 +11,13 @@ class FrameSaver(threading.Thread):
     able to access it.
     """
 
-    def __init__(self, tid, fp, locks, gui, exit_flag):
+    def __init__(self, tid, fp, locks, gui):
         """
         Creating FrameSaver object.
 
         :param tid: thread id number
         :param fp: the FrameProvider object
         """
-        self.exit_flag = exit_flag
 
         threading.Thread.__init__(self)
         self.threadID = tid
@@ -65,10 +64,10 @@ class FrameSaver(threading.Thread):
         """
         self.saveFrame(self.fp.get_frame())
 
-        while self.exit_flag:
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                self.fp.release()
-                break
+        while self.gui.exit_flag:
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     self.fp.release()
+            #     break
 
             self.locks[0].acquire()
             try:
@@ -83,9 +82,12 @@ class FrameSaver(threading.Thread):
                     self.gui.face = False
                     print("Face not detected!")
 
-            except IOError:
-                print("now exiting")
-                exit(0)
+                self.locks[1].release()
+                time.sleep(1)
 
-            self.locks[1].release()
-            time.sleep(1)
+            except Exception as e:
+                if not self.gui.exit_flag:
+                    print("now exiting")
+                    return
+                else:
+                    raise e

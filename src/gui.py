@@ -15,18 +15,16 @@ class App:
     Create our GUI app.
     """
 
-    def __init__(self, window, window_title, statistics, exit_flag, video_stream, weights):
+    def __init__(self, window, window_title, statistics, video_stream, weights):
         """"
         Creating the GUI for the app.
 
         :param window: tk.Tk() object.
         :param window_title: String - our GUI title.
         :param statistics: a Statistics object.
-        :param exit_flag: a boolean flag for ending the run loop.
         :param video_stream: frameProvider object.
         """
-        self.exit_flag = exit_flag
-
+        self.exit_flag = True
         self.window = window
         self.window.title(window_title)
         self.window.configure(bg='white')
@@ -79,9 +77,10 @@ class App:
         """
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             self.exit_flag = False
-            self.vid.release()
-            self.figure.savefig("fig.pdf", bbox_inches='tight')
+            # self.vid.release()
+            # # self.figure.savefig("fig.pdf", bbox_inches='tight')
             self.window.destroy()
+            exit(0)
 
     def snapshot(self):
         """"
@@ -97,7 +96,13 @@ class App:
         Update our video streaming.
         """
         # Get a frame from the video source
-        frame = self.vid.get_frame()
+        try:
+            frame = self.vid.get_frame()
+        except Exception as e:
+            if self.exit_flag:
+                raise e
+            else:
+                return
 
         if self.face:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -116,6 +121,8 @@ class App:
         With every iteration, we update our emotions in our text box.
         :param: newText - our new text for update.
         """
+        if not self.exit_flag:
+            return
         self.text.config(state=NORMAL)
         self.text.delete('1.0', END)
         self.text.insert(tk.END, newText)
@@ -170,6 +177,9 @@ class App:
         """
         Adding attention levels chart to our gui.
         """
+        if not self.exit_flag:
+            return
+
         figure = plt.Figure(figsize=(4, 4), dpi=100)
 
         chart_type = FigureCanvasTkAgg(figure, self.window)
@@ -225,3 +235,4 @@ class App:
         :return: the attention level
         """
         return self.attention_calc.attentionCalc(results)
+

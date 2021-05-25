@@ -9,7 +9,7 @@ class EmoticLoop(threading.Thread):
     The class of the emotic emotion recognition thread.
     """
 
-    def __init__(self, tid, fp, locks, gui, exit_flag):
+    def __init__(self, tid, fp, locks, gui):
         """
         Creating of the emotic thread object.
 
@@ -25,7 +25,6 @@ class EmoticLoop(threading.Thread):
         self.fp = fp
         self.locks = locks
         self.gui = gui
-        self.exit_flag = exit_flag
 
     def run(self):
         """
@@ -38,26 +37,32 @@ class EmoticLoop(threading.Thread):
         start_time = datetime.now()
 
         # start of the run loop
-        while self.exit_flag:
+        while self.gui.exit_flag:
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 self.fp.release()
                 break
+            try:
+                self.locks[1].acquire()
+                if self.gui.face:
+                    results = emotic()
+                    seconds = (datetime.now() - start_time).total_seconds()
 
-            self.locks[1].acquire()
-            results = emotic()
-            seconds = (datetime.now() - start_time).total_seconds()
+                    self.gui.updateEmotionTextBox(results[0])
+                    value = self.gui.attentionBarCalc(results)
 
-            self.gui.updateEmotionTextBox(results[0])
-            value = self.gui.attentionBarCalc(results)
+                    # update attentive tracking chart
+                    self.gui.statistics.addValue(int(seconds), value)
+                    self.gui.addCharts()
 
-            # update attentive tracking chart
-            self.gui.statistics.addValue(int(seconds), value)
-            self.gui.addCharts()
+                    # update GUI features
+                    self.gui.updateAttention(value)
+                    self.gui.updateValence(results[1][0])
+                    self.gui.updateArousal(results[1][1])
+                    self.gui.updateDominance(results[1][2])
 
-            # update GUI features
-            self.gui.updateAttention(value)
-            self.gui.updateValence(results[1][0])
-            self.gui.updateArousal(results[1][1])
-            self.gui.updateDominance(results[1][2])
-
-            self.locks[0].release()
+                self.locks[0].release()
+            except Exception as e:
+                if not self.gui.exit_flag:
+                    return
+                else:
+                    raise e
