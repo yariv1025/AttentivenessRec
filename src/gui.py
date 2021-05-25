@@ -15,7 +15,7 @@ class App:
     Create our GUI app.
     """
 
-    def __init__(self, window, window_title, statistics, exit_flag, video_stream):
+    def __init__(self, window, window_title, statistics, exit_flag, video_stream, weights):
         """"
         Creating the GUI for the app.
 
@@ -40,15 +40,10 @@ class App:
         self.canvas = tk.Canvas(window, width=self.width, height=self.height)
         self.canvas.grid(row=0, column=0, columnspan=3, padx=5, pady=5)
 
-        self.text = tk.Text(window, height=5, width=80)
-        self.text.insert(tk.END, "")
-        self.text.grid(row=6, column=0, columnspan=3, padx=5, pady=5)
-        self.text.config(state=DISABLED)
+        # initialize face detection flag
         self.face = False
-        self.cont_weights = [0.3, 0.3, 0.4]
-        self.param = 0.6
-        self.alpha = 0.3
-        self.attention_calc = AttentionCalc(self.cont_weights, self.param, self.alpha)
+
+        self.attention_calc = AttentionCalc(weights[0], weights[1], weights[2])
 
         # detection label
         self.label_text = tk.StringVar()
@@ -165,6 +160,11 @@ class App:
                                                                                              pady=5)
         self.dominanceLabel = tk.Label(window, textvariable=self.dominanceText, bg='white').grid(row=5, column=0,
                                                                                                  padx=5, pady=5)
+
+        self.text = tk.Text(window, height=5, width=80)
+        self.text.insert(tk.END, "")
+        self.text.grid(row=6, column=0, columnspan=3, padx=5, pady=5)
+        self.text.config(state=DISABLED)
 
     def addCharts(self):
         """

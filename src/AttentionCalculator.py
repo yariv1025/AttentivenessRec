@@ -1,8 +1,8 @@
 class AttentionCalc(object):
-    def __init__(self, cont_weights, param, alpha):
+    def __init__(self, cont_weights, ratio, alpha):
         self.p_result = 0
         self.cont_weights = cont_weights
-        self.param = param
+        self.ratio = ratio
         self.alpha = alpha
 
     def emotionValue(self, emotion):
@@ -55,7 +55,7 @@ class AttentionCalc(object):
         emotion_result = self.emotionCalc(results[0])
         cont_result = self.contCalc(results[1])
 
-        result = emotion_result * self.param + cont_result * (1 - self.param)
+        result = emotion_result * self.ratio + cont_result * (1 - self.ratio)
         self.p_result = result * self.alpha + self.p_result * (1 - self.alpha)
         print(self.p_result)
         return self.p_result

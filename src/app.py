@@ -16,6 +16,13 @@ def app():
     and creating the GUI window.
     """
 
+    # set parameters for attention calculator
+    cont_weights = [0.3, 0.3, 0.4]
+    ratio = 0.6
+    alpha = 0.3
+
+    weights = [cont_weights, ratio, alpha]
+
     # locks creation
     p_lock = threading.Lock()
     c_lock = threading.Lock()
@@ -28,7 +35,7 @@ def app():
     exit_flag = True
 
     # Create a gui window and pass it to the Application object
-    gui = src.gui.App(window, "AttentivnessRec", statistics, exit_flag, fp)
+    gui = src.gui.App(window, "AttentivnessRec", statistics, exit_flag, fp, weights)
 
     # create the 2 other threads of the app
     thread_saver = FrameSaver(2, fp, locks, gui, exit_flag)
