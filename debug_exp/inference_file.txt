@@ -1,1 +1,1 @@
-D:\GitProjects\AttentivenessRec\debug_exp\frames\frame.jpg 220 101 358 273
+D:\PyCharmProjects\AttentivenessRec\debug_exp\frames\frame.jpg 225 137 349 306

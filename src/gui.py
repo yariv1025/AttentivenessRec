@@ -1,14 +1,13 @@
-# # attentive-gui
-import tkinter as tk
-from tkinter import messagebox
-from tkinter import *
-from tkinter.ttk import *
 import cv2
-import PIL.Image, PIL.ImageTk
 import time
+import tkinter as tk
+from tkinter import *
+from tkinter import messagebox
+from tkinter.ttk import *
+import PIL.Image, PIL.ImageTk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import src.statistics_data_loader
+from src.AttentionCalculator import AttentionCalc
 
 
 class App:
@@ -16,44 +15,42 @@ class App:
     Create our GUI app.
     """
 
-    def __init__(self, window, window_title, statistics, exit_flag, video_stream=None, video_source=0):
+    def __init__(self, window, window_title, statistics, video_stream, weights):
         """"
-        :param: window - tk.Tk() object.
-        :param: window_title - String - our GUI title.
-        :param: video_stream - frameProvider object.
-        :param: video_source - zero by default to import video stream from our computer camera.
-        """
-        self.exit_flag = exit_flag
+        Creating the GUI for the app.
 
+        :param window: tk.Tk() object.
+        :param window_title: String - our GUI title.
+        :param statistics: a Statistics object.
+        :param video_stream: frameProvider object.
+        """
+        self.exit_flag = True
         self.window = window
         self.window.title(window_title)
+        self.window.configure(bg='white')
+        self.window.resizable(width=False, height=False)
 
-        # TODO: Change this logic - use only with video_stream.
-        if not video_stream:
-            self.video_source = video_source
-            # open video source (by default this will try to open the computer webcam)
-            self.vid = MyVideoCapture(self.video_source)
-        else:
-            self.vid = video_stream
-            self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
-            self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        self.vid = video_stream
+        self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
+        self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
         # Create a canvas that can fit the above video source size
         self.canvas = tk.Canvas(window, width=self.width, height=self.height)
         self.canvas.grid(row=0, column=0, columnspan=3, padx=5, pady=5)
 
-        self.text = tk.Text(window, height=5, width=80)
-        self.text.insert(tk.END, "")
-        self.text.grid(row=6, column=0, columnspan=3, padx=5, pady=5)
-        self.text.config(state=DISABLED)
+        # initialize face detection flag
         self.face = False
+
+        self.attention_calc = AttentionCalc(weights[0], weights[1], weights[2])
 
         # detection label
         self.label_text = tk.StringVar()
         self.label_text.set('')
-        self.face_detection_label = tk.Label(self.window, textvariable=self.label_text).grid(row=1, column=0,
-                                                                                             columnspan=3, padx=5,
-                                                                                             pady=5)
+        self.face_detection_label = tk.Label(self.window, textvariable=self.label_text, bg='white').grid(row=1,
+                                                                                                         column=0,
+                                                                                                         columnspan=3,
+                                                                                                         padx=5,
+                                                                                                         pady=5)
 
         # After it is called once, the update method will be automatically called every delay milliseconds
         self.delay = 1
@@ -65,7 +62,7 @@ class App:
         # create graph
         self.statistics = statistics
         self.addCharts()
-
+        self.figure = None
         self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     def start(self):
@@ -80,10 +77,11 @@ class App:
         """
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             self.exit_flag = False
-            self.vid.release()
-            self.figure.savefig("fig.pdf", bbox_inches='tight')
+            self.statistics.savetoPDF()
+            # self.vid.release()
+            # # self.figure.savefig("fig.pdf", bbox_inches='tight')
             self.window.destroy()
-            # self.window.quit()
+            exit(0)
 
     def snapshot(self):
         """"
@@ -99,7 +97,13 @@ class App:
         Update our video streaming.
         """
         # Get a frame from the video source
-        frame = self.vid.get_frame()
+        try:
+            frame = self.vid.get_frame()
+        except Exception as e:
+            if self.exit_flag:
+                raise e
+            else:
+                return
 
         if self.face:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -118,6 +122,8 @@ class App:
         With every iteration, we update our emotions in our text box.
         :param: newText - our new text for update.
         """
+        if not self.exit_flag:
+            return
         self.text.config(state=NORMAL)
         self.text.delete('1.0', END)
         self.text.insert(tk.END, newText)
@@ -128,8 +134,8 @@ class App:
         Creating the progress bars and all labels.
         :param: window - tk.TK() object
         """
-        self.emotionPB = Progressbar(window, orient=tk.HORIZONTAL,
-                                     length=300, mode='determinate', maximum=10, value=0)
+        self.attentionPB = Progressbar(window, orient=tk.HORIZONTAL,
+                                       length=300, mode='determinate', maximum=10, value=0)
         self.valencePB = Progressbar(window, orient=tk.HORIZONTAL,
                                      length=300, mode='determinate', maximum=10, value=0)
         self.arousalPB = Progressbar(window, orient=tk.HORIZONTAL,
@@ -137,13 +143,13 @@ class App:
         self.dominancePB = Progressbar(window, orient=tk.HORIZONTAL,
                                        length=300, mode='determinate', maximum=10, value=0)
 
-        self.emotionPB.grid(row=2, column=1, padx=5, pady=5)
+        self.attentionPB.grid(row=2, column=1, padx=5, pady=5)
         self.valencePB.grid(row=3, column=1, padx=5, pady=5)
         self.arousalPB.grid(row=4, column=1, padx=5, pady=5)
         self.dominancePB.grid(row=5, column=1, padx=5, pady=5)
 
-        self.emotionText = tk.StringVar()
-        self.emotionText.set('Emotion (%0)')
+        self.attentionText = tk.StringVar()
+        self.attentionText.set('Attention (%0)')
 
         self.valenceText = tk.StringVar()
         self.valenceText.set('Valence (%0)')
@@ -154,35 +160,46 @@ class App:
         self.dominanceText = tk.StringVar()
         self.dominanceText.set('Dominance (%0)')
 
-        self.emotionLabel = tk.Label(window, textvariable=self.emotionText).grid(row=2, column=0, padx=5, pady=5)
-        self.valenceLabel = tk.Label(window, textvariable=self.valenceText).grid(row=3, column=0, padx=5, pady=5)
-        self.arousalLabel = tk.Label(window, textvariable=self.arousalText).grid(row=4, column=0, padx=5, pady=5)
-        self.dominanceLabel = tk.Label(window, textvariable=self.dominanceText).grid(row=5, column=0, padx=5, pady=5)
+        self.attentionLabel = tk.Label(window, textvariable=self.attentionText, bg='white').grid(row=2, column=0,
+                                                                                                 padx=5, pady=5)
+        self.valenceLabel = tk.Label(window, textvariable=self.valenceText, bg='white').grid(row=3, column=0, padx=5,
+                                                                                             pady=5)
+        self.arousalLabel = tk.Label(window, textvariable=self.arousalText, bg='white').grid(row=4, column=0, padx=5,
+                                                                                             pady=5)
+        self.dominanceLabel = tk.Label(window, textvariable=self.dominanceText, bg='white').grid(row=5, column=0,
+                                                                                                 padx=5, pady=5)
+
+        self.text = tk.Text(window, height=5, width=80)
+        self.text.insert(tk.END, "")
+        self.text.grid(row=6, column=0, columnspan=3, padx=5, pady=5)
+        self.text.config(state=DISABLED)
 
     def addCharts(self):
         """
-        Adding emotion levels chart to our gui.
+        Adding attention levels chart to our gui.
         """
+        if not self.exit_flag:
+            return
+
         figure = plt.Figure(figsize=(4, 4), dpi=100)
 
         chart_type = FigureCanvasTkAgg(figure, self.window)
         chart_type.get_tk_widget().grid(row=2, column=2, rowspan=4, padx=5, pady=5)
 
         ax = figure.add_subplot(111)
-        ax.set_title('Emotion tracking')
+        ax.set_title('Attention tracking')
         ax.set_ylim([0, 10])
 
         data_frame = self.statistics.get_data_frame()
         data_frame.plot(kind='line', legend=True, ax=ax)
 
-
-    def updateEmotion(self, value):
+    def updateAttention(self, value):
         """"
-        Update Emotion bar value.
+        Update Attention bar value.
         :param: value - number.
         """
-        self.emotionPB['value'] = value
-        self.emotionText.set('Emotion (%{})'.format(value * 10))
+        self.attentionPB['value'] = value
+        self.attentionText.set('Attention (%{:.2f})'.format(value * 10))
         self.window.update_idletasks()
 
     def updateValence(self, value):
@@ -212,51 +229,11 @@ class App:
         self.dominanceText.set('Dominance (%{:.0f})'.format(value * 10))
         self.window.update_idletasks()
 
-    def emotionBarCalc(self, emotions):
-        bar = 5
-        for emotion in emotions:
-            bar += self.emotionValue(emotion)
-
-        return max(0, min(10, bar))
-
-    def emotionValue(self, emotion):
-        pos = ['Affection', 'Anticipation', 'Confidence', 'Engagement', 'Esteem', 'Excitement',
-               'Happiness', 'Peace', 'Pleasure', 'Surprise', 'Sympathy']
-
-        neg = ['Anger', 'Annoyance', 'Aversion', 'Disapproval', 'Disconnection', 'Disquietment',
-               'Doubt/Confusion', 'Embarrassment', 'Fatigue', 'Fear', 'Pain', 'Sadness',
-               'Sensitivity', 'Suffering', 'Yearning']
-
-        if emotion in pos:
-            return 1
-        elif emotion in neg:
-            return -1
-        else:
-            raise ValueError("Emotion not found!")
-
-
-class MyVideoCapture:
-    """"
-    Used for import video stream from our computer camera.
-    """
-
-    def __init__(self, video_source=0):
-        """"
-        Constructor - create 'vid' variable = video stream.
-        :param: video_source - Zero by default to import video stream from our computer camera.
+    def attentionBarCalc(self, results):
         """
-        # Open the video source
-        self.vid = cv2.VideoCapture(video_source)
-        if not self.vid.isOpened():
-            raise ValueError("Unable to open video source", video_source)
-
-        # Get video source width and height
-        self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
-        self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
-
-    def __del__(self):
-        """"
-        By calling this method we close the video streaming.
+        Calculte the Attention level of the subject
+        :param results: the results from the ANN model
+        :return: the attention level
         """
-        if self.vid.isOpened():
-            self.vid.release()
+        return self.attention_calc.attentionCalc(results)
+
