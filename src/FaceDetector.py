@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from mtcnn.mtcnn import MTCNN
 
 
@@ -5,11 +7,15 @@ class FaceDetector(MTCNN):
     """
     Perform facial detection.
     """
+
     def __init__(self):
         """
         Creating FaceDetector object by calling to the super class constructor (MTCNN).
         """
         super().__init__()
+        self.no_face_time = 0
+        self.temp_timer = None
+        self.prev = True
 
     def get_face(self, img):
         """
@@ -30,4 +36,27 @@ class FaceDetector(MTCNN):
         :return: boolean value - False if theres no face. Else, True.
         """
         faces = self.get_face(img)
-        return False if len(faces) == 0 else faces
+
+        if len(faces) > 0 and self.prev:
+            return faces
+        elif len(faces) > 0 and not self.prev:
+            self.prev = True
+            self.stop_timer()
+            return faces
+        elif len(faces) == 0 and self.prev:
+            self.prev = False
+            self.start_timer()
+            return False
+        elif len(faces) == 0 and not self.prev:
+            return False
+
+    def start_timer(self):
+        self.temp_timer = datetime.now()
+
+    def stop_timer(self):
+        self.no_face_time = self.no_face_time + (datetime.now() - self.temp_timer).total_seconds()
+
+#         if len(faces) == 0:
+#             start_timer()
+#         else:
+#             stop_timer()
