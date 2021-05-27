@@ -1,6 +1,7 @@
 from pandas import DataFrame
 import matplotlib.pyplot as plt
 from fpdf import FPDF, Template
+from src.ClassDetails import ClassDetails
 
 
 class Statistics(object):
@@ -8,12 +9,14 @@ class Statistics(object):
     A class for storing the attention values of the subject.
     """
 
-    def __init__(self):
+    def __init__(self, class_data, fd):
         """
         Creating a new Statistics object.
         """
         self.times = []
         self.values = []
+        self.class_data = class_data
+        self.fd = fd
 
     def addValue(self, time, value):
         """
@@ -76,7 +79,7 @@ class Statistics(object):
                 'priority': 2,
             },
             {
-                'name': 'company_header', 'type': 'T', 'x1': 80.0, 'y1': 35.5, 'x2': 120.0, 'y2': 42.5,
+                'name': 'company_header', 'type': 'T', 'x1': 75.0, 'y1': 35.5, 'x2': 120.0, 'y2': 42.5,
                 'font': 'helvetica',
                 'size': 16.0, 'bold': 2, 'italic': 0, 'underline': 10, 'foreground': 0, 'background': 0, 'align': 'I',
                 'text': '', 'priority': 2,
@@ -136,6 +139,18 @@ class Statistics(object):
                 'align': 'I', 'text': '', 'priority': 2,
             },
             {
+                'name': 'lecture_time', 'type': 'T', 'x1': 30.0, 'y1': 90.5, 'x2': 120.0, 'y2': 85.5,
+                'font': 'helvetica', 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 5, 'foreground': 0,
+                'background': 0,
+                'align': 'I', 'text': '', 'priority': 2,
+            },
+            {
+                'name': 'lecture_time_value', 'type': 'T', 'x1': 70.0, 'y1': 90.5, 'x2': 120.0, 'y2': 85.5,
+                'font': 'helvetica', 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 0, 'foreground': 0,
+                'background': 0,
+                'align': 'I', 'text': '', 'priority': 2,
+            },
+            {
                 'name': 'graph_header', 'type': 'T', 'x1': 30.0, 'y1': 165.5, 'x2': 120.0, 'y2': 170.5,
                 'font': 'helvetica', 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 5, 'foreground': 0,
                 'background': 0,
@@ -145,6 +160,11 @@ class Statistics(object):
                 'name': 'graph', 'type': 'I', 'x1': 65.0, 'y1': 170.0, 'x2': 150.0, 'y2': 250.0, 'font': None,
                 'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
                 'text': 'logo', 'priority': 2,
+            },
+            {
+                'name': 'rights', 'type': 'T', 'x1': 75.0, 'y1': 285.5, 'x2': 150.0, 'y2': 290.5,
+                'font': 'helvetica', 'size': 7.0, 'bold': 1, 'italic': 0, 'underline': 0, 'foreground': 0,
+                'background': 0, 'align': 'I', 'text': '', 'priority': 2,
             },
             # {
             #     'name': 'line1', 'type': 'L', 'x1': 100.0, 'y1': 25.0, 'x2': 100.0, 'y2': 57.0, 'font': 'helvetica',
@@ -173,25 +193,31 @@ class Statistics(object):
 
         # Lecture details:
         pdf_file["lecture"] = "Class:"
-        pdf_file["lecture_value"] = "167"
+        pdf_file["lecture_value"] = self.class_data.lecture_value
         pdf_file["lecturer"] = "Lecturer:"
-        pdf_file["lecturer_value"] = "Dr. Tamar"
+        pdf_file["lecturer_value"] = self.class_data.lecturer_value
 
         # Template of text:
-        pdf_file["line_1"] = "AttentiveRec system collected attention and concentration data during the lecture, " \
-                             "performed "
-        pdf_file["line_2"] = "the statistical analysis, and reached the following results:"
+        pdf_file["line_1"] = "AttentiveRec system collected attention data during the lecture, " \
+                             "performed the statistical analysis,"
+        pdf_file["line_2"] = "and reached the following results:"
 
         # Statistic details:
         pdf_file["avg"] = "Average attention level:"
-        pdf_file["avg_value"] = "70 %"
+        pdf_file["avg_value"] = str(round(df['Attention levels'].mean() * 10, 2)) + '%'
 
         pdf_file["Inactivity_time"] = "Inactivity time:"
-        pdf_file["Inactivity_time_value"] = "10 sec"
+        pdf_file["Inactivity_time_value"] = str(round(self.fd.no_face_time / 60, 2)) + " minutes"
+
+        pdf_file["lecture_time"] = "Length of the lecture:"
+        pdf_file["lecture_time_value"] = str(round(self.times[len(self.times) - 1] / 60, 2)) + ' minutes'
 
         # Graph:
         pdf_file["graph_header"] = "Graph:"
-        pdf_file["graph"] = "../public/img/graph.jpg"
+        pdf_file["graph"] = "../public/img/graph.png"
+
+        # Rights
+        pdf_file["rights"] = "© 2021 Yariv Garala & Stav Lobel. All rights reserved."
 
         # # PDF generation - render the page
         try:

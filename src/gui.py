@@ -79,7 +79,7 @@ class App:
             self.exit_flag = False
             self.statistics.savetoPDF()
             # self.vid.release()
-            # # self.figure.savefig("fig.pdf", bbox_inches='tight')
+            self.figure.savefig("../public/img/graph.png", bbox_inches='tight')
             self.window.destroy()
             exit(0)
 
@@ -181,12 +181,12 @@ class App:
         if not self.exit_flag:
             return
 
-        figure = plt.Figure(figsize=(4, 4), dpi=100)
+        self.figure = plt.Figure(figsize=(4, 4), dpi=100)
 
-        chart_type = FigureCanvasTkAgg(figure, self.window)
+        chart_type = FigureCanvasTkAgg(self.figure, self.window)
         chart_type.get_tk_widget().grid(row=2, column=2, rowspan=4, padx=5, pady=5)
 
-        ax = figure.add_subplot(111)
+        ax = self.figure.add_subplot(111)
         ax.set_title('Attention tracking')
         ax.set_ylim([0, 10])
 
@@ -236,4 +236,3 @@ class App:
         :return: the attention level
         """
         return self.attention_calc.attentionCalc(results)
-
