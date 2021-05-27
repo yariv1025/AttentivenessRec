@@ -1,10 +1,13 @@
 import threading
 import src.gui
 import tkinter as tk
+
+from src.FaceDetector import FaceDetector
 from src.FrameProvider import FrameProvider
 from src.FrameSaver import FrameSaver
 from src.statistics_data_loader import Statistics
 from src.emotic_loop import EmoticLoop
+from src.ClassDetails import ClassDetails
 
 
 def app():
@@ -29,15 +32,16 @@ def app():
     locks = [p_lock, c_lock]
 
     # creation of misc variables for the app
+    fd = FaceDetector()
     fp = FrameProvider(0)
-    statistics = Statistics()
+    statistics = Statistics(class_data, fd)
     window = tk.Tk()
 
     # Create a gui window and pass it to the Application object
     gui = src.gui.App(window, "AttentivnessRec", statistics, fp, weights)
 
     # create the 2 other threads of the app
-    thread_saver = FrameSaver(2, fp, locks, gui)
+    thread_saver = FrameSaver(2, fp, locks, fd, gui)
     emotic_loop = EmoticLoop(3, fp, locks, gui)
 
     # initializing of the threads
@@ -48,5 +52,5 @@ def app():
 
 # calling the app
 if __name__ == "__main__":
+    class_data = ClassDetails(lecture_value=167, lecturer_value='Tamar')
     app()
-
