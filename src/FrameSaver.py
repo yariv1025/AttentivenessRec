@@ -11,7 +11,7 @@ class FrameSaver(threading.Thread):
     able to access it.
     """
 
-    def __init__(self, tid, fp, locks, gui):
+    def __init__(self, tid, fp, locks, fd, gui):
         """
         Creating FrameSaver object.
 
@@ -24,7 +24,7 @@ class FrameSaver(threading.Thread):
         self.fp = fp
         self.locks = locks
         self.locks[1].acquire()
-        self.fd = FaceDetector()
+        self.fd = fd
         self.gui = gui
         self.main_path = os.path.dirname(os.getcwd())
         self.frames_path = self.main_path + '\debug_exp\\frames'
