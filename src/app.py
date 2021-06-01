@@ -14,7 +14,20 @@ def app():
     The main function for the app.
     This function creates the locks for the multi-threading execution, starts the threads
     and creating the GUI window.
+
+    Emotic parameters:
+    TRAIN
+    --mode train --data_path PROJECT_PATH/data/emotic_pre --experiment_path PROJECT_PATH/debug_exp
+
+    TEST
+    --mode test --data_path PROJECT_PATH/data/emotic_pre --experiment_path PROJECT_PATH/debug_exp
+
+    RUN
+    --mode inference --inference_file PROJECT_PATH\debug_exp\inference_file.txt --experiment_path PROJECT_PATH\debug_exp
     """
+
+
+
 
     # set parameters for attention calculator
     cont_weights = [0.3, 0.3, 0.4]
