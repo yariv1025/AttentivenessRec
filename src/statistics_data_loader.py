@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pandas import DataFrame
 import matplotlib.pyplot as plt
 from fpdf import FPDF, Template
@@ -57,6 +59,7 @@ class Statistics(object):
         ax.axis('tight')
         ax.axis('off')
         the_table = ax.table(cellText=df.values, colLabels=df.columns, loc='center')
+        date = datetime.now()
 
         # this will define the ELEMENTS that will compose the template.
         elements = [
@@ -206,8 +209,10 @@ class Statistics(object):
         pdf_file["avg"] = "Average attention level:"
         pdf_file["avg_value"] = str(round(df['Attention levels'].mean() * 10, 2)) + '%'
 
+        total_time = self.times[len(self.times) - 1]
+
         pdf_file["Inactivity_time"] = "Inactivity time:"
-        pdf_file["Inactivity_time_value"] = str(round(self.fd.no_face_time / 60, 2)) + " minutes"
+        pdf_file["Inactivity_time_value"] = str(round((self.fd.no_face_time / total_time) * 100, 2)) + '%'
 
         pdf_file["lecture_time"] = "Length of the lecture:"
         pdf_file["lecture_time_value"] = str(round(self.times[len(self.times) - 1] / 60, 2)) + ' minutes'
@@ -222,7 +227,7 @@ class Statistics(object):
         # # PDF generation - render the page
         try:
             {
-                pdf_file.render("../public/reports/Report.pdf")
+                pdf_file.render("../public/reports/Report_{}_{}_{}_{}.pdf".format(self.class_data.lecture_value, date.day, date.month, date.year))
             }
         except Exception as e:
             print("An exception occurred: ", e)
