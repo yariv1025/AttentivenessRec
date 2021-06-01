@@ -24,42 +24,65 @@ class App:
         :param statistics: a Statistics object.
         :param video_stream: frameProvider object.
         """
+
+        self.attention_calc = AttentionCalc(weights[0], weights[1], weights[2])
+
+        # initialize exit flag
         self.exit_flag = True
+
+        # initialize face detection flag
+        self.face = False
+
+        # Root configuration
         self.window = window
         self.window.title(window_title)
         self.window.configure(bg='white')
         self.window.resizable(width=False, height=False)
 
+        # Extract video source size
         self.vid = video_stream
         self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
         self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
         # Create a canvas that can fit the above video source size
         self.canvas = tk.Canvas(window, width=self.width, height=self.height)
-        self.canvas.grid(row=0, column=0, columnspan=3, padx=5, pady=5)
+        self.canvas.grid(row=0, column=0, columnspan=2, padx=5, pady=5)
 
-        # initialize face detection flag
-        self.face = False
-
-        self.attention_calc = AttentionCalc(weights[0], weights[1], weights[2])
-
-        # detection label
+        # Face detection label
         self.label_text = tk.StringVar()
         self.label_text.set('')
         self.face_detection_label = tk.Label(self.window, textvariable=self.label_text, bg='white').grid(row=1,
                                                                                                          column=0,
-                                                                                                         columnspan=3,
+                                                                                                         columnspan=2,
                                                                                                          padx=5,
                                                                                                          pady=5)
+        # Create progress bars, progress text, labels and text box for createProgressBars() function
+        self.attentionPB = None
+        self.valencePB = None
+        self.arousalPB = None
+        self.dominancePB = None
+
+        self.attentionText = tk.StringVar()
+        self.valenceText = tk.StringVar()
+        self.arousalText = tk.StringVar()
+        self.dominanceText = tk.StringVar()
+
+        self.attentionLabel = None
+        self.valenceLabel = None
+        self.arousalLabel = None
+        self.dominanceLabel = None
+
+        self.text = tk.Text(window, height=5, width=45)
 
         # After it is called once, the update method will be automatically called every delay milliseconds
         self.delay = 1
+        self.photo = None
         self.update()
 
         # create progress bars
         self.createProgressBars(window)
 
-        # create graph
+        # Create graph
         self.statistics = statistics
         self.addCharts()
         self.figure = None
@@ -77,7 +100,6 @@ class App:
         """
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             self.exit_flag = False
-            # self.vid.release()
             self.figure.savefig("../public/img/graph.png", bbox_inches='tight')
             self.statistics.savetoPDF()
             self.window.destroy()
@@ -131,7 +153,7 @@ class App:
 
     def createProgressBars(self, window):
         """"
-        Creating the progress bars and all labels.
+        Configure the progress bars and all labels.
         :param: window - tk.TK() object
         """
         self.attentionPB = Progressbar(window, orient=tk.HORIZONTAL,
@@ -148,16 +170,9 @@ class App:
         self.arousalPB.grid(row=4, column=1, padx=5, pady=5)
         self.dominancePB.grid(row=5, column=1, padx=5, pady=5)
 
-        self.attentionText = tk.StringVar()
         self.attentionText.set('Attention (%0)')
-
-        self.valenceText = tk.StringVar()
         self.valenceText.set('Valence (%0)')
-
-        self.arousalText = tk.StringVar()
         self.arousalText.set('Arousal (%0)')
-
-        self.dominanceText = tk.StringVar()
         self.dominanceText.set('Dominance (%0)')
 
         self.attentionLabel = tk.Label(window, textvariable=self.attentionText, bg='white').grid(row=2, column=0,
@@ -169,9 +184,8 @@ class App:
         self.dominanceLabel = tk.Label(window, textvariable=self.dominanceText, bg='white').grid(row=5, column=0,
                                                                                                  padx=5, pady=5)
 
-        self.text = tk.Text(window, height=5, width=80)
         self.text.insert(tk.END, "")
-        self.text.grid(row=6, column=0, columnspan=3, padx=5, pady=5)
+        self.text.grid(row=2, column=2, rowspan=4, padx=5, pady=5)
         self.text.config(state=DISABLED)
 
     def addCharts(self):
@@ -184,7 +198,7 @@ class App:
         self.figure = plt.Figure(figsize=(4, 4), dpi=100)
 
         chart_type = FigureCanvasTkAgg(self.figure, self.window)
-        chart_type.get_tk_widget().grid(row=2, column=2, rowspan=4, padx=5, pady=5)
+        chart_type.get_tk_widget().grid(row=0, column=2, rowspan=4, padx=5, pady=5)
 
         ax = self.figure.add_subplot(111)
         ax.set_title('Attention tracking')
@@ -231,7 +245,7 @@ class App:
 
     def attentionBarCalc(self, results):
         """
-        Calculte the Attention level of the subject
+        Calculate the Attention level of the subject
         :param results: the results from the ANN model
         :return: the attention level
         """
