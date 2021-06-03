@@ -47,18 +47,18 @@ class EmoticLoop(threading.Thread):
                     results = emotic()
                     seconds = (datetime.now() - start_time).total_seconds()
 
-                    self.gui.updateEmotionTextBox(results[0])
-                    value = self.gui.attentionBarCalc(results)
+                    self.gui.update_emotion_textbox(results[0])
+                    value = self.gui.attention_bar_calc(results)
 
                     # update attentive tracking chart
-                    self.gui.statistics.addValue(int(seconds), value)
-                    self.gui.addCharts()
+                    self.gui.statistics.add_value(int(seconds), value)
+                    self.gui.add_charts()
 
                     # update GUI features
-                    self.gui.updateAttention(value)
-                    self.gui.updateValence(results[1][0])
-                    self.gui.updateArousal(results[1][1])
-                    self.gui.updateDominance(results[1][2])
+                    self.gui.update_attention(value)
+                    self.gui.update_valence(results[1][0])
+                    self.gui.update_arousal(results[1][1])
+                    self.gui.update_dominance(results[1][2])
 
                 self.locks[0].release()
             except Exception as e:

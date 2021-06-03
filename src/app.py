@@ -2,12 +2,12 @@ import threading
 import src.gui
 import tkinter as tk
 
-from src.FaceDetector import FaceDetector
-from src.FrameProvider import FrameProvider
-from src.FrameSaver import FrameSaver
+from src.face_detector import FaceDetector
+from src.frame_provider import FrameProvider
+from src.frame_saver import FrameSaver
 from src.statistics_data_loader import Statistics
 from src.emotic_loop import EmoticLoop
-from src.ClassDetails import ClassDetails
+from src.class_details import ClassDetails
 
 
 def app():
@@ -29,14 +29,10 @@ def app():
     --mode inference --inference_file PROJECT_PATH\debug_exp\inference_file.txt --experiment_path PROJECT_PATH\debug_exp
     """
 
-
-
-
     # set parameters for attention calculator
     cont_weights = [0.3, 0.3, 0.4]
     ratio = 0.6
     alpha = 0.3
-
     weights = [cont_weights, ratio, alpha]
 
     # locks creation

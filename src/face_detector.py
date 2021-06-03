@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from mtcnn.mtcnn import MTCNN
 
 
@@ -51,12 +50,13 @@ class FaceDetector(MTCNN):
             return False
 
     def start_timer(self):
+        """
+        Initializes the timer to count when no faces are detected in the image.
+        """
         self.temp_timer = datetime.now()
 
     def stop_timer(self):
+        """
+        Calculate the entire time theres no faces are detected in the image.
+        """
         self.no_face_time = self.no_face_time + (datetime.now() - self.temp_timer).total_seconds()
-
-#         if len(faces) == 0:
-#             start_timer()
-#         else:
-#             stop_timer()
