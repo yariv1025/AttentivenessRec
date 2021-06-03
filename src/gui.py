@@ -7,7 +7,7 @@ from tkinter.ttk import *
 import PIL.Image, PIL.ImageTk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from src.AttentionCalculator import AttentionCalc
+from src.attention_calculator import AttentionCalc
 
 
 class App:
@@ -57,21 +57,21 @@ class App:
                                                                                                          columnspan=2,
                                                                                                          padx=5,
                                                                                                          pady=5)
-        # Create progress bars, progress text, labels and text box for createProgressBars() function
-        self.attentionPB = None
-        self.valencePB = None
-        self.arousalPB = None
-        self.dominancePB = None
+        # Create progress bars, progress text, labels and text box for create_progress_bars() function
+        self.attention_bar = None
+        self.valence_bar = None
+        self.arousal_bar = None
+        self.dominance_bar = None
 
-        self.attentionText = tk.StringVar()
-        self.valenceText = tk.StringVar()
-        self.arousalText = tk.StringVar()
-        self.dominanceText = tk.StringVar()
+        self.attention_text = tk.StringVar()
+        self.valence_text = tk.StringVar()
+        self.arousal_text = tk.StringVar()
+        self.dominance_text = tk.StringVar()
 
-        self.attentionLabel = None
-        self.valenceLabel = None
-        self.arousalLabel = None
-        self.dominanceLabel = None
+        self.attention_label = None
+        self.valence_label = None
+        self.arousal_label = None
+        self.dominance_label = None
 
         self.text = tk.Text(window, height=5, width=45)
 
@@ -81,11 +81,11 @@ class App:
         self.update()
 
         # create progress bars
-        self.createProgressBars(window)
+        self.create_progress_bars(window)
 
         # Create graph
         self.statistics = statistics
-        self.addCharts()
+        self.add_charts()
         self.figure = None
         self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
 
@@ -102,7 +102,7 @@ class App:
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             self.exit_flag = False
             self.figure.savefig("../public/img/graph.png", bbox_inches='tight')
-            self.statistics.savetoPDF()
+            self.statistics.save_to_pdf()
             self.window.destroy()
             exit(0)
 
@@ -140,7 +140,7 @@ class App:
         self.canvas.create_image(0, 0, image=self.photo, anchor=tk.NW)
         self.window.after(self.delay, self.update)
 
-    def updateEmotionTextBox(self, newText):
+    def update_emotion_textbox(self, newText):
         """"
         With every iteration, we update our emotions in our text box.
         :param: newText - our new text for update.
@@ -152,44 +152,44 @@ class App:
         self.text.insert(tk.END, newText)
         self.text.config(state=DISABLED)
 
-    def createProgressBars(self, window):
+    def create_progress_bars(self, window):
         """"
         Configure the progress bars and all labels.
         :param: window - tk.TK() object
         """
-        self.attentionPB = Progressbar(window, orient=tk.HORIZONTAL,
+        self.attention_bar = Progressbar(window, orient=tk.HORIZONTAL,
+                                         length=300, mode='determinate', maximum=10, value=0)
+        self.valence_bar = Progressbar(window, orient=tk.HORIZONTAL,
                                        length=300, mode='determinate', maximum=10, value=0)
-        self.valencePB = Progressbar(window, orient=tk.HORIZONTAL,
-                                     length=300, mode='determinate', maximum=10, value=0)
-        self.arousalPB = Progressbar(window, orient=tk.HORIZONTAL,
-                                     length=300, mode='determinate', maximum=10, value=0)
-        self.dominancePB = Progressbar(window, orient=tk.HORIZONTAL,
+        self.arousal_bar = Progressbar(window, orient=tk.HORIZONTAL,
                                        length=300, mode='determinate', maximum=10, value=0)
+        self.dominance_bar = Progressbar(window, orient=tk.HORIZONTAL,
+                                         length=300, mode='determinate', maximum=10, value=0)
 
-        self.attentionPB.grid(row=2, column=1, padx=5, pady=5)
-        self.valencePB.grid(row=3, column=1, padx=5, pady=5)
-        self.arousalPB.grid(row=4, column=1, padx=5, pady=5)
-        self.dominancePB.grid(row=5, column=1, padx=5, pady=5)
+        self.attention_bar.grid(row=2, column=1, padx=5, pady=5)
+        self.valence_bar.grid(row=3, column=1, padx=5, pady=5)
+        self.arousal_bar.grid(row=4, column=1, padx=5, pady=5)
+        self.dominance_bar.grid(row=5, column=1, padx=5, pady=5)
 
-        self.attentionText.set('Attention (%0)')
-        self.valenceText.set('Valence (%0)')
-        self.arousalText.set('Arousal (%0)')
-        self.dominanceText.set('Dominance (%0)')
+        self.attention_text.set('Attention (%0)')
+        self.valence_text.set('Valence (%0)')
+        self.arousal_text.set('Arousal (%0)')
+        self.dominance_text.set('Dominance (%0)')
 
-        self.attentionLabel = tk.Label(window, textvariable=self.attentionText, bg='white').grid(row=2, column=0,
-                                                                                                 padx=5, pady=5)
-        self.valenceLabel = tk.Label(window, textvariable=self.valenceText, bg='white').grid(row=3, column=0, padx=5,
-                                                                                             pady=5)
-        self.arousalLabel = tk.Label(window, textvariable=self.arousalText, bg='white').grid(row=4, column=0, padx=5,
-                                                                                             pady=5)
-        self.dominanceLabel = tk.Label(window, textvariable=self.dominanceText, bg='white').grid(row=5, column=0,
-                                                                                                 padx=5, pady=5)
+        self.attention_label = tk.Label(window, textvariable=self.attention_text, bg='white').grid(row=2, column=0,
+                                                                                                   padx=5, pady=5)
+        self.valence_label = tk.Label(window, textvariable=self.valence_text, bg='white').grid(row=3, column=0, padx=5,
+                                                                                               pady=5)
+        self.arousal_label = tk.Label(window, textvariable=self.arousal_text, bg='white').grid(row=4, column=0, padx=5,
+                                                                                               pady=5)
+        self.dominance_label = tk.Label(window, textvariable=self.dominance_text, bg='white').grid(row=5, column=0,
+                                                                                                   padx=5, pady=5)
 
         self.text.insert(tk.END, "")
         self.text.grid(row=2, column=2, rowspan=4, padx=5, pady=5)
         self.text.config(state=DISABLED)
 
-    def addCharts(self):
+    def add_charts(self):
         """
         Adding attention levels chart to our gui.
         """
@@ -208,46 +208,46 @@ class App:
         data_frame = self.statistics.get_data_frame()
         data_frame.plot(kind='line', legend=True, ax=ax)
 
-    def updateAttention(self, value):
+    def update_attention(self, value):
         """"
         Update Attention bar value.
         :param: value - number.
         """
-        self.attentionPB['value'] = value
-        self.attentionText.set('Attention (%{:.2f})'.format(value * 10))
+        self.attention_bar['value'] = value
+        self.attention_text.set('Attention (%{:.2f})'.format(value * 10))
         self.window.update_idletasks()
 
-    def updateValence(self, value):
+    def update_valence(self, value):
         """"
         Update Valence bar value.
         :param: value - number.
         """
-        self.valencePB['value'] = value
-        self.valenceText.set('Valence (%{:.0f})'.format(value * 10))
+        self.valence_bar['value'] = value
+        self.valence_text.set('Valence (%{:.0f})'.format(value * 10))
         self.window.update_idletasks()
 
-    def updateArousal(self, value):
+    def update_arousal(self, value):
         """"
         Update Arousal bar value.
         :param: value - number.
         """
-        self.arousalPB['value'] = value
-        self.arousalText.set('Arousal (%{:.0f})'.format(value * 10))
+        self.arousal_bar['value'] = value
+        self.arousal_text.set('Arousal (%{:.0f})'.format(value * 10))
         self.window.update_idletasks()
 
-    def updateDominance(self, value):
+    def update_dominance(self, value):
         """"
         Update Dominance bar value.
         :param: value - number.
         """
-        self.dominancePB['value'] = value
-        self.dominanceText.set('Dominance (%{:.0f})'.format(value * 10))
+        self.dominance_bar['value'] = value
+        self.dominance_text.set('Dominance (%{:.0f})'.format(value * 10))
         self.window.update_idletasks()
 
-    def attentionBarCalc(self, results):
+    def attention_bar_calc(self, results):
         """
         Calculate the Attention level of the subject
         :param results: the results from the ANN model
         :return: the attention level
         """
-        return self.attention_calc.attentionCalc(results)
+        return self.attention_calc.attention_calc(results)

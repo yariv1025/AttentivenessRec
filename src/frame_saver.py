@@ -18,7 +18,7 @@ class FrameSaver(threading.Thread):
         :param fp: the FrameProvider object
         """
         threading.Thread.__init__(self)
-        self.threadID = tid
+        self.thread_id = tid
         self.fp = fp
         self.locks = locks
         self.locks[1].acquire()
@@ -31,7 +31,7 @@ class FrameSaver(threading.Thread):
             os.makedirs(self.frames_path)
             print("Directory frames has been created.")
 
-    def saveFrame(self, frame, faces=None):
+    def save_frame(self, frame, faces=None):
         """
         The main function for storing the images in the memory.
 
@@ -60,7 +60,7 @@ class FrameSaver(threading.Thread):
         """
         A loop for storing frames from video.
         """
-        self.saveFrame(self.fp.get_frame())
+        self.save_frame(self.fp.get_frame())
 
         while self.gui.exit_flag:
             self.locks[0].acquire()
@@ -69,7 +69,7 @@ class FrameSaver(threading.Thread):
                 faces = self.fd.has_face(frame)
 
                 if faces:
-                    self.saveFrame(frame, faces)
+                    self.save_frame(frame, faces)
                     self.gui.face = True
                     print("img saved")
                 else:

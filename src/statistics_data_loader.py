@@ -1,7 +1,7 @@
 from datetime import datetime
 from pandas import DataFrame
 import matplotlib.pyplot as plt
-from fpdf import FPDF, Template
+from fpdf import Template
 
 
 class Statistics(object):
@@ -18,7 +18,7 @@ class Statistics(object):
         self.class_data = class_data
         self.fd = fd
 
-    def addValue(self, time, value):
+    def add_value(self, time, value):
         """
         A function for adding a new row for the attention level table.
 
@@ -40,7 +40,7 @@ class Statistics(object):
         df = DataFrame(data, columns=['Time', 'Attention levels']).groupby('Time').sum()
         return df
 
-    def savetoPDF(self):
+    def save_to_pdf(self):
         """
         PDF report generator.
 

@@ -2,12 +2,12 @@ import threading
 import src.gui
 import tkinter as tk
 
-from src.FaceDetector import FaceDetector
-from src.FrameProvider import FrameProvider
-from src.FrameSaver import FrameSaver
+from src.face_detector import FaceDetector
+from src.frame_provider import FrameProvider
+from src.frame_saver import FrameSaver
 from src.statistics_data_loader import Statistics
 from src.emotic_loop import EmoticLoop
-from src.ClassDetails import ClassDetails
+from src.class_details import ClassDetails
 
 
 def app():

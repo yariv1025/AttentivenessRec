@@ -24,7 +24,7 @@ class AttentionCalc(object):
 
         self.neutral = ['Affection', 'Pleasure', 'Sympathy', 'Fatigue', 'Pain', 'Suffering', 'Yearning']
 
-    def emotionValue(self, emotion):
+    def emotion_value(self, emotion):
         """
         The function receives an emotion and returns it's value.
 
@@ -40,7 +40,7 @@ class AttentionCalc(object):
         else:
             raise ValueError("Emotion not found!")
 
-    def emotionCalc(self, emotions):
+    def emotion_calc(self, emotions):
         """
         Function for calculate the attentive levels of the subject based on emotion recognition.
         The function return value in range 0 to 10. the higher the number, the higher the level of attention.
@@ -50,11 +50,11 @@ class AttentionCalc(object):
         """
         bar = 5
         for emotion in emotions:
-            bar += self.emotionValue(emotion)
+            bar += self.emotion_value(emotion)
 
         return max(0, min(10, bar))
 
-    def contCalc(self, cont):
+    def cont_calc(self, cont):
         """
         Calculation of continuous values.
         :param cont: continuous weights
@@ -66,14 +66,14 @@ class AttentionCalc(object):
 
         return round(valence + arousal + dominance, 2)
 
-    def attentionCalc(self, results):
+    def attention_calc(self, results):
         """
         Calculation of attention value.
         :param results: The final result of attention level
         :return: attention level
         """
-        emotion_result = self.emotionCalc(results[0])
-        cont_result = self.contCalc(results[1])
+        emotion_result = self.emotion_calc(results[0])
+        cont_result = self.cont_calc(results[1])
 
         result = emotion_result * self.ratio + cont_result * (1 - self.ratio)
         self.p_result = result * self.alpha + self.p_result * (1 - self.alpha)
