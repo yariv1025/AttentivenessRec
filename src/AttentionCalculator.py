@@ -1,9 +1,28 @@
 class AttentionCalc(object):
+    """
+    The class calculate the attention level base on the emotic model result
+    """
+
     def __init__(self, cont_weights, ratio, alpha):
+        """
+        Creating AttentionCalc object for calculate the attention level.
+        :param cont_weights: the weights of every continuous value
+        :param ratio: the ratio between the continuous values and the emotion values
+        :param alpha: the ratio between the current result and the previous result
+        """
         self.p_result = 0
         self.cont_weights = cont_weights
         self.ratio = ratio
         self.alpha = alpha
+
+        self.pos = ['Anticipation', 'Confidence', 'Engagement', 'Esteem', 'Excitement',
+                    'Happiness', 'Peace', 'Surprise']
+
+        self.neg = ['Anger', 'Annoyance', 'Aversion', 'Disapproval', 'Disconnection', 'Disquietment',
+                    'Doubt/Confusion', 'Embarrassment', 'Fear', 'Sadness',
+                    'Sensitivity']
+
+        self.neutral = ['Affection', 'Pleasure', 'Sympathy', 'Fatigue', 'Pain', 'Suffering', 'Yearning']
 
     def emotionValue(self, emotion):
         """
@@ -12,20 +31,11 @@ class AttentionCalc(object):
         :param emotion: an emotion
         :return: 1 if positive emotion, else -1.
         """
-        pos = ['Anticipation', 'Confidence', 'Engagement', 'Esteem', 'Excitement',
-               'Happiness', 'Peace', 'Surprise']
-
-        neg = ['Anger', 'Annoyance', 'Aversion', 'Disapproval', 'Disconnection', 'Disquietment',
-               'Doubt/Confusion', 'Embarrassment', 'Fear', 'Sadness',
-               'Sensitivity']
-
-        neutral = ['Affection', 'Pleasure', 'Sympathy', 'Fatigue', 'Pain', 'Suffering', 'Yearning']
-
-        if emotion in pos:
+        if emotion in self.pos:
             return 1
-        elif emotion in neg:
+        elif emotion in self.neg:
             return -1
-        elif emotion in neutral:
+        elif emotion in self.neutral:
             return 0
         else:
             raise ValueError("Emotion not found!")
@@ -45,6 +55,11 @@ class AttentionCalc(object):
         return max(0, min(10, bar))
 
     def contCalc(self, cont):
+        """
+        Calculation of continuous values.
+        :param cont: continuous weights
+        :return: continuous calculation result
+        """
         valence = cont[0] * self.cont_weights[0]
         arousal = cont[1] * self.cont_weights[1]
         dominance = cont[2] * self.cont_weights[2]
@@ -52,6 +67,11 @@ class AttentionCalc(object):
         return round(valence + arousal + dominance, 2)
 
     def attentionCalc(self, results):
+        """
+        Calculation of attention value.
+        :param results: The final result of attention level
+        :return: attention level
+        """
         emotion_result = self.emotionCalc(results[0])
         cont_result = self.contCalc(results[1])
 

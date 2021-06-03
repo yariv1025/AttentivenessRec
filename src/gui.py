@@ -25,12 +25,13 @@ class App:
         :param video_stream: frameProvider object.
         """
 
+        # Initialize the attention weights
         self.attention_calc = AttentionCalc(weights[0], weights[1], weights[2])
 
-        # initialize exit flag
+        # Initialize exit flag
         self.exit_flag = True
 
-        # initialize face detection flag
+        # Initialize face detection flag
         self.face = False
 
         # Root configuration
@@ -90,7 +91,7 @@ class App:
 
     def start(self):
         """"
-        Create our GUI loop (Thread).
+        Start our GUI loop (Thread).
         """
         self.window.mainloop()
 

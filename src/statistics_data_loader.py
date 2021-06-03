@@ -1,9 +1,7 @@
 from datetime import datetime
-
 from pandas import DataFrame
 import matplotlib.pyplot as plt
 from fpdf import FPDF, Template
-from src.ClassDetails import ClassDetails
 
 
 class Statistics(object):
@@ -44,8 +42,10 @@ class Statistics(object):
 
     def savetoPDF(self):
         """
-        PDF report generator:
+        PDF report generator.
 
+        Configuration details:
+        ---------------------
         # Layout    ('P', 'L')
         # Unit      ('mm', 'cm', 'in')
         # format    ('A3', 'A4'(default), 'À5', 'letter', 'legal', (100,150))
@@ -61,7 +61,7 @@ class Statistics(object):
         the_table = ax.table(cellText=df.values, colLabels=df.columns, loc='center')
         date = datetime.now()
 
-        # this will define the ELEMENTS that will compose the template.
+        # This will define the ELEMENTS that will compose the template.
         elements = [
             {
                 'name': 'box', 'type': 'B', 'x1': 15.0, 'y1': 15.0, 'x2': 195.0, 'y2': 280.0, 'font': 'helvetica',
@@ -182,19 +182,19 @@ class Statistics(object):
             # },
         ]
 
-        # here we instantiate the template and define the HEADER
+        # Here we instantiate the template and define the HEADER
         pdf_file = Template(format="A4", elements=elements, title="Sample Invoice")
         pdf_file.add_page()
 
-        # we FILL some of the fields of the template with the information we want
-        # note we access the elements treating the template instance as a "dict"
+        # We FILL some of the fields of the template with the information we want
+        # Note we access the elements treating the template instance as a "dict"
 
         # Header:
         pdf_file["company_logo"] = "../public/img/SCE_logo.png"
         pdf_file["github_barcode"] = "../public/img/github.png"
         pdf_file["company_header"] = "AttentivenessRec Report"
 
-        # Lecture details:
+        # Lecture and lecturer details:
         pdf_file["lecture"] = "Class:"
         pdf_file["lecture_value"] = self.class_data.lecture_value
         pdf_file["lecturer"] = "Lecturer:"
@@ -206,10 +206,10 @@ class Statistics(object):
         pdf_file["line_2"] = "and reached the following results:"
 
         # Statistic details:
+        total_time = self.times[len(self.times) - 1]
+
         pdf_file["avg"] = "Average attention level:"
         pdf_file["avg_value"] = str(round(df['Attention levels'].mean() * 10, 2)) + '%'
-
-        total_time = self.times[len(self.times) - 1]
 
         pdf_file["Inactivity_time"] = "Inactivity time:"
         pdf_file["Inactivity_time_value"] = str(round((self.fd.no_face_time / total_time) * 100, 2)) + '%'
@@ -224,10 +224,12 @@ class Statistics(object):
         # Rights
         pdf_file["rights"] = "© 2021 Yariv Garala & Stav Lobel. All rights reserved."
 
-        # # PDF generation - render the page
+        # PDF generation - render the page
         try:
             {
-                pdf_file.render("../public/reports/Report_{}_{}_{}_{}.pdf".format(self.class_data.lecture_value, date.day, date.month, date.year))
+                pdf_file.render(
+                    "../public/reports/Report_{}_{}_{}_{}.pdf".format(self.class_data.lecture_value, date.day,
+                                                                      date.month, date.year))
             }
         except Exception as e:
             print("An exception occurred: ", e)

@@ -29,14 +29,10 @@ def app():
     --mode inference --inference_file PROJECT_PATH\debug_exp\inference_file.txt --experiment_path PROJECT_PATH\debug_exp
     """
 
-
-
-
     # set parameters for attention calculator
     cont_weights = [0.3, 0.3, 0.4]
     ratio = 0.6
     alpha = 0.3
-
     weights = [cont_weights, ratio, alpha]
 
     # locks creation
