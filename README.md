@@ -1,8 +1,11 @@
-# Attention and concentration monitoring system for students in online learning
-(Facial Emotion Recognition by Machine Learning)
+# Attentivness Recognition
+
+### Attention monitoring system for students in online learning
+
+
 
 <p align="center">
-  <img width="250" height="50" src="https://imagehost.imageupload.net/2020/04/27/injection.jpg">
+  <img width="400" height="250" src="https://i.ibb.co/10GRLpG/Attentive-recognition.jpg">
 </p>
 
 
@@ -27,19 +30,22 @@ Our system has come to solve these challenges.
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 <br><br>
  
-###### File structure
+### File structure
 ```
 AttentivenessRec/
-├── .github
+├── .github/                    # GitHub action configuration
 │   ├── workflows
 │       └── python-app.yml
-├── .debug_exp
-│   ├── frames
+├── .debug_exp/
+│   ├── frames                  # Contains the last saved frame
 │   │   └── frame.jpg
-│   └── logs
-│      ├── train
-│      └── val
-├── docs
+│   ├── models/                 # Models
+│   │   └── ...
+│   ├── results/                # Model training results
+│   │   └── ...
+│   ├── config.txt 
+│   └── inference_file.txt      # Contains the frame PATH and b-box details
+├── docs/
 │   ├── Annotations
 │   │   └── ...
 │   ├── emotic
@@ -47,65 +53,100 @@ AttentivenessRec/
 │   └──  emotic_pre
 │        └── ...
 ├── src/
-│   ├── 
-│   ├── 
-│   ├── 
-│   ├── 
-│   ├── 
-│   ├── 
-│   ├── 
-│   ├── 
-│   ├── 
-│   └──  
+│   ├── app.py
+│   ├── attention_calculator.py
+│   ├── class_details.py
+│   ├── emotic.py
+│   ├── emotic_app.py
+│   ├── emotic_dataset.py
+│   ├── emotic_loop.py
+│   ├── face_detector.py
+│   ├── frame_provider.py
+│   ├── frame_saver.py
+│   ├── gui.py
+│   ├── inference.py
+│   ├── loss.py
+│   ├── model_creator.py
+│   ├── prepare_models.py
+│   ├── statistics_data_loader.py
+│   ├── test.py
+│   └──  train.py
 ├── test/
-│   ├── unit.js 
-│   └── test.js
+│   ├── unit.py             # Currently without content   
+│   ├── feature.py          # Currently without content
+│   └── Integration.py      # Currently without content
 ├── venv
 │   └── ...
 ├── .gitignore
-├── =4.2b1        # Check this file
-├── Dockerfile    # Try to implement
 ├── README.md
-└──requirements.txt
+└── requirements.txt
 
 ```
-###### Requirements
-* Environments: Python 3.8 with Anaconda environment.
-* All `requirements.txt` dependencies installed (Will be explained later).
 
-###### Prerequisites
-We recommended using Pycharm IDE to run this project!
-<br>
+
+### Requirements
+* #### We recommended using Pycharm IDE to run this project!
+* #### Environments: Python 3.8 with Anaconda environment.
+* #### Package manager: PIP.
+* #### All `requirements.txt` dependencies installed (Will be explained later).
+
+
+### Installing
 Firstly open the bash and clone this repository to your working environment by entering the command
 
 ```sh
 git clone git@github.com:yariv1025/AttentivenessRec.git
 ```
 
-###### Installing
-run the pip install command for you to be able to run this project.
-(This command will download locally all the packages that's needed for the developing and running of this application.)
+Open the project in your IDE, integrate the system with the bash and run the pip install command listed below, for you
+to be able to run this project.<br>
+(This command will download locally all the packages that's needed for the running of this application.)
 
 ```sh
 pip install -r requirements.txt
 ```
 
-###### Running Configuration
-Add "running configuration" to running the `App.py`.
-
+### Dev Configuration
+In the run/debug configuration we will enter the following details:
 ```sh
 Script path: "App.py PATH"
-Parameters: "experiment_path ..\debug_exp PATH"
 Python interpreter: "Python 3.8 with Anaconda3 environment"
 Working directory: "src directory PATH"
+```
+In the parameters field we will enter the settings according to the desired action:
+* #### Training
+* #### Testing
+* #### Running
+
+###### Training Configuration
+"Training configuration" for train the model.
+```sh
+Parameters: " --mode train --data_path PROJECT_PATH/data/emotic_pre --experiment_path PROJECT_PATH/debug_exp"
+```
+
+###### Testing Configuration
+"Testing configuration" for test the model.
+```sh
+Parameters: "--mode test --data_path PROJECT_PATH/data/emotic_pre --experiment_path PROJECT_PATH/debug_exp"
+```
+
+###### Running Configuration
+"running configuration" for running the `App.py`.
+```sh
+Parameters: "--mode inference --inference_file PROJECT_PATH\debug_exp\inference_file.txt --experiment_path PROJECT_PATH\debug_exp"
 ```
  
 After doing so you will be able to run the app by clicking on 'Run app'
 
+
 ## Built With
-* [OpenCV](https://opencv.org/) - OpenCV (Open Source Computer Vision Library) is an open source computer vision and machine learning software library.
-* [ÝOLO](https://github.com/ultralytics/yolov3) -  Future object detection methods.
-* [EMOTIC Datadet](http://sunai.uoc.edu/emotic/) -  EMOTions In Context, is a database of images with people in real environments, annotated with their apparent emotions.
+
+* [OpenCV](https://opencv.org/) - An open source computer vision and machine learning software library with focus on real-time applications..
+* [EMOTIC](http://sunai.uoc.edu/emotic/) -  EMOTions In Context, is a database of images with people in real environments, annotated with their apparent emotions.
+* [Pandas](https://pandas.pydata.org/) - A fast, powerful, flexible and easy to use open source data analysis and manipulation tool. 
+* [MTCNN](https://github.com/ipazc/mtcnn) - A fast, powerful, flexible and easy to use open source data analysis and manipulation tool. 
+* [emotic](https://github.com/Tandon-A/emotic) - . 
+
 
 ## Training
 
@@ -125,8 +166,45 @@ The conclusions are saved in the `inference_list.txt` file.
 ```
 
 ## Citation
+___
+```
+```
+```
+```
+```
+```
+
 
 ## About Us
+___
+<table style="color: white">
+	<thead>
+	</thead>
+	<tr>
+		<td>
+            <p align="center">
+              <img width="250" height="250" src="https://media-exp1.licdn.com/dms/image/D4E35AQHT3pvCkLMO0Q/profile-framedphoto-shrink_800_800/0/1622721618153?e=1622815200&v=beta&t=cNbdqCszJScpmGxDvBfHIfL4A2nbkyh7FD3VJpP-94M" height="auto" width="200" style="border-radius:50%">
+            </p>
+		</td>
+		<td>
+                        <p align="center">
+              <img width="250" height="250" src="https://media-exp1.licdn.com/dms/image/C4D35AQEgn6h2WEVx_A/profile-framedphoto-shrink_400_400/0/1611431372357?e=1622815200&v=beta&t=jfAKrHsPNZ14x8C1OcWeFPCiu87A5OspuxznJO39QEI" height="auto" width="200" style="border-radius:50%">
+            </p>
+		</td>
+	</tr>
+	<tr>
+		<td>
+            <strong>Name: <span dir="ltr">Yariv Garala</span></strong><br>
+            <strong>Role: Software Engineering </strong><br>
+		</td>
+		<td>
+            <strong>Name: <span dir="ltr">Stav Lobel</span></strong><br>
+            <strong>Role: Software Engineering </strong><br>
+		</td>
+	</tr>
+</table>
+
+
 
 ## License
 MIT?
