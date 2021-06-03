@@ -15,6 +15,7 @@
 
 # Manually added
 .idea/
+.EmoticDB/
 .github/workflows/python-package-conda.yml
 
 # Generated files
@@ -250,3 +251,12 @@ dmypy.json
 .prof
 
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm
+/EmoticDB/
+/docs/emotic_pre/
+/docs/emotic/
+/=4.2b1
+/docs/Annotations/
+/debug_exp/inference_file.txt
+/debug_exp/results/inference_list.txt
+
+/src/Summary.pdf
