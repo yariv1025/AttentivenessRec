@@ -3,7 +3,7 @@
 ### Attention monitoring system for students in online learning
 
 <p align="center">
-  <img width="400" height="250" src="https://i.ibb.co/10GRLpG/Attentive-recognition.jpg">
+  <img width="600" height="400" src="https://i.ibb.co/10GRLpG/Attentive-recognition.jpg">
 </p>
 
 ## About The Project
