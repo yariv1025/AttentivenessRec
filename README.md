@@ -3,21 +3,21 @@
 ### Attention monitoring system for students in online learning
 
 <p align="center">
-  <img width="600" height="400" src="https://i.ibb.co/10GRLpG/Attentive-recognition.jpg">
+  <img width="650" height="400" src="https://i.ibb.co/10GRLpG/Attentive-recognition.jpg">
 </p>
 
 ## About The Project
 
 ___
 
-The World Health Organization declared COVID-19 a global emergency on January 30, 2020 and an epidemic on March 11,
+The World Health Organization declared COVID-19 a global emergency on January 30, 2020 and an epidemic on March 11,2020.
 
-2020. Countries around the world responded to the epidemic by imposing restrictions on flights and gatherings and giving
-      directions to create distance Social, closure, curfew, cancellation of events and closure of all non-essential
-      institutions. As a result, the virus has had a huge impact on students, lecturers, and educational organizations
-      around the world. The corona plague has caused schools, colleges and universities around the world to close their
-      doors so that students can maintain the rules of social distance. Consequently, the transition from the frontal
-      learning method to online learning was necessary.
+Countries around the world responded to the epidemic by imposing restrictions on flights and gatherings and giving
+directions to create distance Social, closure, curfew, cancellation of events and closure of all non-essential
+institutions. As a result, the virus has had a huge impact on students, lecturers, and educational organizations around
+the world. The corona plague has caused schools, colleges and universities around the world to close their doors so that
+students can maintain the rules of social distance. Consequently, the transition from the frontal learning method to
+online learning was necessary.
 
 The rapid transition from one teaching method to another, together with the unpreparedness of the various institutions
 are the main cause of the plethora of problems in online learning. In frontal learning the lecturer has the ability to
@@ -33,10 +33,6 @@ that equals and even transcends frontal learning.
 Our system has come to solve these challenges.
 
 ## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing
-purposes.
-<br><br>
 
 ### File structure
 
@@ -94,7 +90,6 @@ AttentivenessRec/
 ├── .gitignore
 ├── README.md
 └── requirements.txt
-
 ```
 
 ### Requirements
@@ -105,6 +100,8 @@ AttentivenessRec/
 * #### All `requirements.txt` dependencies installed (Will be explained later).
 
 ### Installing
+
+###### These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 Firstly open the bash and clone this repository to your working environment by entering the command
 
@@ -168,9 +165,7 @@ After doing so you will be able to run the app by clicking on 'Run app'
   real-time applications..
 * [Pandas](https://pandas.pydata.org/) - A fast, powerful, flexible and easy to use open source data analysis and
   manipulation tool.
-* [MTCNN](https://github.com/ipazc/mtcnn) - A fast, powerful, flexible and easy to use open source data analysis and
-  manipulation tool.
-* []() - .
+* [MTCNN](https://github.com/ipazc/mtcnn) - MTCNN face detection implementation for TensorFlow, as a PIP package.
 
 ## Training
 
@@ -200,13 +195,13 @@ ___
   emotions in images using context information..
 
 ```
-R. Kosti, J.M. Álvarez, A. Recasens and A. Lapedriza, "Context based emotion recognition using emotic dataset",
-IEEE Transactions on Pattern Analysis and Machine Intelligence (PAMI), 2019. (pdf, bibtex).
+R. Kosti, J.M. Álvarez, A. Recasens and A. Lapedriza, "Context based emotion recognition using
+emotic dataset", IEEE Transactions on Pattern Analysis and Machine Intelligence (PAMI), 2019.
 ```
 
 ```
-R. Kosti, J.M. Álvarez, A. Recasens and A. Lapedriza, "Emotion Recognition in Context",
-Computer Vision and Pattern Recognition (CVPR), 2017. (pdf, bibtex)
+R. Kosti, J.M. Álvarez, A. Recasens and A. Lapedriza, "Emotion Recognition in Context", Computer
+Vision and Pattern Recognition (CVPR), 2017.
 ```
 
 ## About Us
