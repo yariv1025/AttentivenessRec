@@ -49,9 +49,10 @@ class EmoticLoop(threading.Thread):
 
                     self.gui.updateEmotionTextBox(results[0])
                     value = self.gui.attentionBarCalc(results)
+                    self.gui.statistics.save_emotion(results[0])
 
                     # update attentive tracking chart
-                    self.gui.statistics.addValue(int(seconds), value)
+                    self.gui.statistics.add_value(int(seconds), value)
                     self.gui.addCharts()
 
                     # update GUI features

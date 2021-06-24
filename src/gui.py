@@ -79,7 +79,7 @@ class App:
             self.exit_flag = False
             # self.vid.release()
             self.figure.savefig("../public/img/graph.png", bbox_inches='tight')
-            self.statistics.savetoPDF()
+            self.statistics.save_to_pdf()
             self.window.destroy()
             exit(0)
 

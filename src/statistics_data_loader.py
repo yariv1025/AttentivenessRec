@@ -1,9 +1,7 @@
 from datetime import datetime
-
 from pandas import DataFrame
 import matplotlib.pyplot as plt
-from fpdf import FPDF, Template
-from src.ClassDetails import ClassDetails
+from fpdf import Template
 
 
 class Statistics(object):
@@ -19,8 +17,17 @@ class Statistics(object):
         self.values = []
         self.class_data = class_data
         self.fd = fd
+        self.emotion_counter = {}
 
-    def addValue(self, time, value):
+        cat = ['Affection', 'Anger', 'Annoyance', 'Anticipation', 'Aversion', 'Confidence', 'Disapproval',
+               'Disconnection', 'Disquietment', 'Doubt/Confusion', 'Embarrassment', 'Engagement', 'Esteem',
+               'Excitement', 'Fatigue', 'Fear', 'Happiness', 'Pain', 'Peace', 'Pleasure', 'Sadness', 'Sensitivity',
+               'Suffering', 'Surprise', 'Sympathy', 'Yearning']
+
+        for c in cat:
+            self.emotion_counter[c] = 0
+
+    def add_value(self, time, value):
         """
         A function for adding a new row for the attention level table.
 
@@ -29,6 +36,25 @@ class Statistics(object):
         """
         self.times.append(time)
         self.values.append(value)
+
+    def save_emotion(self, results):
+        for emotion in results:
+            self.emotion_counter[emotion] = self.emotion_counter[emotion] + 1
+
+    def get_top_3(self):
+        """
+        Create top 3 emotions list
+        :return: top 3 emotions list
+        """
+        emotions = self.emotion_counter.copy()
+        top = []
+
+        for i in range(3):
+            max_key = max(emotions, key=emotions.get)
+            top.append(max_key)
+            emotions.pop(max_key)
+
+        return top
 
     def get_data_frame(self):
         """
@@ -42,10 +68,12 @@ class Statistics(object):
         df = DataFrame(data, columns=['Time', 'Attention levels']).groupby('Time').sum()
         return df
 
-    def savetoPDF(self):
+    def save_to_pdf(self):
         """
-        PDF report generator:
+        PDF report generator.
 
+        Configuration details:
+        ---------------------
         # Layout    ('P', 'L')
         # Unit      ('mm', 'cm', 'in')
         # format    ('A3', 'A4'(default), 'À5', 'letter', 'legal', (100,150))
@@ -61,7 +89,12 @@ class Statistics(object):
         the_table = ax.table(cellText=df.values, colLabels=df.columns, loc='center')
         date = datetime.now()
 
-        # this will define the ELEMENTS that will compose the template.
+        # call for top 3 emotions list
+        emotions = self.get_top_3()
+        if len(emotions) != 3:
+            raise ValueError('Top 3 emotions dose not exist')
+
+        # This will define the ELEMENTS that will compose the template.
         elements = [
             {
                 'name': 'box', 'type': 'B', 'x1': 15.0, 'y1': 15.0, 'x2': 195.0, 'y2': 280.0, 'font': 'helvetica',
@@ -88,79 +121,103 @@ class Statistics(object):
                 'text': '', 'priority': 2,
             },
             {
-                'name': 'lecture', 'type': 'T', 'x1': 30.0, 'y1': 45.5, 'x2': 120.0, 'y2': 50.5, 'font': 'helvetica',
+                'name': 'lecture', 'type': 'T', 'x1': 30.0, 'y1': 50.5, 'x2': 120.0, 'y2': 50.5, 'font': 'helvetica',
                 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 5, 'foreground': 0, 'background': 0, 'align': 'I',
                 'text': '', 'priority': 2,
             },
             {
-                'name': 'lecture_value', 'type': 'T', 'x1': 42.0, 'y1': 45.5, 'x2': 120.0, 'y2': 50.5,
+                'name': 'lecture_value', 'type': 'T', 'x1': 42.0, 'y1': 50.5, 'x2': 120.0, 'y2': 50.5,
                 'font': 'helvetica',
                 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
                 'text': '', 'priority': 2,
             },
             {
-                'name': 'lecturer', 'type': 'T', 'x1': 30.0, 'y1': 50.5, 'x2': 120.0, 'y2': 55.5, 'font': 'helvetica',
+                'name': 'lecturer', 'type': 'T', 'x1': 30.0, 'y1': 60.5, 'x2': 120.0, 'y2': 55.5, 'font': 'helvetica',
                 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 5, 'foreground': 0, 'background': 0, 'align': 'I',
                 'text': '', 'priority': 2,
             },
             {
-                'name': 'lecturer_value', 'type': 'T', 'x1': 47.0, 'y1': 50.5, 'x2': 120.0, 'y2': 55.5,
+                'name': 'lecturer_value', 'type': 'T', 'x1': 47.0, 'y1': 60.5, 'x2': 120.0, 'y2': 55.5,
                 'font': 'helvetica',
                 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
                 'text': '', 'priority': 2,
             },
             {
-                'name': 'line_1', 'type': 'T', 'x1': 30.0, 'y1': 60.5, 'x2': 80.0, 'y2': 65.5, 'font': 'helvetica',
+                'name': 'line_1', 'type': 'T', 'x1': 30.0, 'y1': 70.5, 'x2': 80.0, 'y2': 65.5, 'font': 'helvetica',
                 'size': 10.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
                 'text': '', 'priority': 2,
             },
             {
-                'name': 'line_2', 'type': 'T', 'x1': 30.0, 'y1': 65.5, 'x2': 120.0, 'y2': 70.5, 'font': 'helvetica',
+                'name': 'line_2', 'type': 'T', 'x1': 30.0, 'y1': 75.5, 'x2': 120.0, 'y2': 70.5, 'font': 'helvetica',
                 'size': 10.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
                 'text': '', 'priority': 2,
             },
             {
-                'name': 'avg', 'type': 'T', 'x1': 30.0, 'y1': 75.5, 'x2': 120.0, 'y2': 80.5, 'font': 'helvetica',
+                'name': 'avg', 'type': 'T', 'x1': 30.0, 'y1': 85.5, 'x2': 120.0, 'y2': 80.5, 'font': 'helvetica',
                 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 5, 'foreground': 0, 'background': 0, 'align': 'I',
                 'text': '', 'priority': 2,
             },
             {
-                'name': 'avg_value', 'type': 'T', 'x1': 75.0, 'y1': 75.5, 'x2': 120.0, 'y2': 80.5, 'font': 'helvetica',
+                'name': 'avg_value', 'type': 'T', 'x1': 75.0, 'y1': 85.5, 'x2': 120.0, 'y2': 80.5, 'font': 'helvetica',
                 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
                 'text': '', 'priority': 2,
             },
             {
-                'name': 'Inactivity_time', 'type': 'T', 'x1': 30.0, 'y1': 80.5, 'x2': 120.0, 'y2': 85.5,
+                'name': 'Inactivity_time', 'type': 'T', 'x1': 30.0, 'y1': 95.5, 'x2': 120.0, 'y2': 85.5,
                 'font': 'helvetica', 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 5, 'foreground': 0,
                 'background': 0,
                 'align': 'I', 'text': '', 'priority': 2,
             },
             {
-                'name': 'Inactivity_time_value', 'type': 'T', 'x1': 60.0, 'y1': 80.5, 'x2': 120.0, 'y2': 85.5,
+                'name': 'Inactivity_time_value', 'type': 'T', 'x1': 60.0, 'y1': 95.5, 'x2': 120.0, 'y2': 85.5,
                 'font': 'helvetica', 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 0, 'foreground': 0,
                 'background': 0,
                 'align': 'I', 'text': '', 'priority': 2,
             },
             {
-                'name': 'lecture_time', 'type': 'T', 'x1': 30.0, 'y1': 90.5, 'x2': 120.0, 'y2': 85.5,
+                'name': 'lecture_time', 'type': 'T', 'x1': 30.0, 'y1': 110.5, 'x2': 120.0, 'y2': 85.5,
                 'font': 'helvetica', 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 5, 'foreground': 0,
                 'background': 0,
                 'align': 'I', 'text': '', 'priority': 2,
             },
             {
-                'name': 'lecture_time_value', 'type': 'T', 'x1': 70.0, 'y1': 90.5, 'x2': 120.0, 'y2': 85.5,
+                'name': 'lecture_time_value', 'type': 'T', 'x1': 70.0, 'y1': 110.5, 'x2': 120.0, 'y2': 85.5,
                 'font': 'helvetica', 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 0, 'foreground': 0,
                 'background': 0,
                 'align': 'I', 'text': '', 'priority': 2,
             },
             {
-                'name': 'graph_header', 'type': 'T', 'x1': 30.0, 'y1': 165.5, 'x2': 120.0, 'y2': 170.5,
+                'name': 'top_emotions', 'type': 'T', 'x1': 30.0, 'y1': 125.5, 'x2': 120.0, 'y2': 85.5,
                 'font': 'helvetica', 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 5, 'foreground': 0,
                 'background': 0,
                 'align': 'I', 'text': '', 'priority': 2,
             },
             {
-                'name': 'graph', 'type': 'I', 'x1': 65.0, 'y1': 170.0, 'x2': 150.0, 'y2': 250.0, 'font': None,
+                'name': 'top_emotions_value1', 'type': 'T', 'x1': 40.0, 'y1': 140.5, 'x2': 120.0, 'y2': 85.5,
+                'font': 'helvetica', 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 0, 'foreground': 0,
+                'background': 0,
+                'align': 'I', 'text': '', 'priority': 2,
+            },
+            {
+                'name': 'top_emotions_value2', 'type': 'T', 'x1': 40.0, 'y1': 155.5, 'x2': 120.0, 'y2': 85.5,
+                'font': 'helvetica', 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 0, 'foreground': 0,
+                'background': 0,
+                'align': 'I', 'text': '', 'priority': 2,
+            },
+            {
+                'name': 'top_emotions_value3', 'type': 'T', 'x1': 40.0, 'y1': 170.5, 'x2': 120.0, 'y2': 85.5,
+                'font': 'helvetica', 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 0, 'foreground': 0,
+                'background': 0,
+                'align': 'I', 'text': '', 'priority': 2,
+            },
+            {
+                'name': 'graph_header', 'type': 'T', 'x1': 30.0, 'y1': 175.5, 'x2': 120.0, 'y2': 170.5,
+                'font': 'helvetica', 'size': 10.0, 'bold': 1, 'italic': 0, 'underline': 5, 'foreground': 0,
+                'background': 0,
+                'align': 'I', 'text': '', 'priority': 2,
+            },
+            {
+                'name': 'graph', 'type': 'I', 'x1': 65.0, 'y1': 180.0, 'x2': 150.0, 'y2': 250.0, 'font': None,
                 'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
                 'text': 'logo', 'priority': 2,
             },
@@ -182,19 +239,19 @@ class Statistics(object):
             # },
         ]
 
-        # here we instantiate the template and define the HEADER
+        # Here we instantiate the template and define the HEADER
         pdf_file = Template(format="A4", elements=elements, title="Sample Invoice")
         pdf_file.add_page()
 
-        # we FILL some of the fields of the template with the information we want
-        # note we access the elements treating the template instance as a "dict"
+        # We FILL some of the fields of the template with the information we want
+        # Note we access the elements treating the template instance as a "dict"
 
         # Header:
         pdf_file["company_logo"] = "../public/img/SCE_logo.png"
         pdf_file["github_barcode"] = "../public/img/github.png"
         pdf_file["company_header"] = "AttentivenessRec Report"
 
-        # Lecture details:
+        # Lecture and lecturer details:
         pdf_file["lecture"] = "Class:"
         pdf_file["lecture_value"] = self.class_data.lecture_value
         pdf_file["lecturer"] = "Lecturer:"
@@ -206,16 +263,21 @@ class Statistics(object):
         pdf_file["line_2"] = "and reached the following results:"
 
         # Statistic details:
+        total_time = self.times[len(self.times) - 1]
+
         pdf_file["avg"] = "Average attention level:"
         pdf_file["avg_value"] = str(round(df['Attention levels'].mean() * 10, 2)) + '%'
-
-        total_time = self.times[len(self.times) - 1]
 
         pdf_file["Inactivity_time"] = "Inactivity time:"
         pdf_file["Inactivity_time_value"] = str(round((self.fd.no_face_time / total_time) * 100, 2)) + '%'
 
         pdf_file["lecture_time"] = "Length of the lecture:"
         pdf_file["lecture_time_value"] = str(round(self.times[len(self.times) - 1] / 60, 2)) + ' minutes'
+
+        pdf_file["top_emotions"] = "Top 3 emotions:"
+        pdf_file["top_emotions_value1"] = "1) " + str(emotions[0])
+        pdf_file["top_emotions_value2"] = "2) " + str(emotions[1])
+        pdf_file["top_emotions_value3"] = "3) " + str(emotions[2])
 
         # Graph:
         pdf_file["graph_header"] = "Graph:"
@@ -224,10 +286,12 @@ class Statistics(object):
         # Rights
         pdf_file["rights"] = "© 2021 Yariv Garala & Stav Lobel. All rights reserved."
 
-        # # PDF generation - render the page
+        # PDF generation - render the page
         try:
             {
-                pdf_file.render("../public/reports/Report_{}_{}_{}_{}.pdf".format(self.class_data.lecture_value, date.day, date.month, date.year))
+                pdf_file.render(
+                    "../public/reports/Report_{}_{}_{}_{}.pdf".format(self.class_data.lecture_value, date.day,
+                                                                      date.month, date.year))
             }
         except Exception as e:
             print("An exception occurred: ", e)
