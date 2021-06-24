@@ -61,5 +61,5 @@ def app():
 
 # calling the app
 if __name__ == "__main__":
-    class_data = ClassDetails(lecture_value=167, lecturer_value='Tamar Shrot')
+    class_data = ClassDetails(lecture_value=1, lecturer_value='Tamar Shrot')
     app()

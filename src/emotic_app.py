@@ -117,3 +117,10 @@ def emotic():
 
     else:
         raise ValueError('Unknown mode')
+
+
+def get_model():
+    print(emotic())
+
+
+get_model()
