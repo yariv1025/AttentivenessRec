@@ -3,7 +3,7 @@ from datetime import datetime
 from pandas import DataFrame
 import matplotlib.pyplot as plt
 from fpdf import FPDF, Template
-from src.ClassDetails import ClassDetails
+from src.class_details import ClassDetails
 
 
 class Statistics(object):
