@@ -54,9 +54,12 @@ class FaceDetector(MTCNN):
         Initializes the timer to count when no faces are detected in the image.
         """
         self.temp_timer = datetime.now()
+        return self.temp_timer
 
     def stop_timer(self):
         """
         Calculate the entire time theres no faces are detected in the image.
         """
         self.no_face_time = self.no_face_time + (datetime.now() - self.temp_timer).total_seconds()
+        self.temp_timer = None
+        return self.temp_timer

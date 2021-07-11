@@ -60,7 +60,7 @@ class Statistics(object):
 
     def get_data_frame(self):
         """
-        A function for recieving the attention levels that has been recorded as a DataFrame object.
+        A function for receiving the attention levels that has been recorded as a DataFrame object.
 
         :return: Dataframe object of the attention levels.
         """

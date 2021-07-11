@@ -42,10 +42,10 @@ class FrameSaver(threading.Thread):
         cv2.imwrite(os.path.join(self.frames_path, 'frame.jpg'), frame)
 
         if faces:
-            x1 = faces[0]['box'][0]
-            y1 = faces[0]['box'][1]
-            x2 = faces[0]['box'][0] + faces[0]['box'][2]
-            y2 = faces[0]['box'][1] + faces[0]['box'][3]
+            x1 = max(0, faces[0]['box'][0])
+            y1 = max(0, faces[0]['box'][1])
+            x2 = max(0, faces[0]['box'][0] + faces[0]['box'][2])
+            y2 = max(0, faces[0]['box'][1] + faces[0]['box'][3])
         else:
             x1, y1, x2, y2 = 0, 0, 1, 1
 
