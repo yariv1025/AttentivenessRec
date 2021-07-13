@@ -195,7 +195,7 @@ emotic dataset", IEEE Transactions on Pattern Analysis and Machine Intelligence 
 ___
 
 <p align="center">
-  <img width="750" height="650" src="https://i.ibb.co/XzFVTkk/About-Us.jpg">
+  <img width="750" height="650" src="https://i.ibb.co/hgVSk5f/About-Us.png">
 </p>
 
 
