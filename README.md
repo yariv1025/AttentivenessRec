@@ -1,6 +1,6 @@
 # Attentivness Recognition
 
-### Attention monitoring system for students in online learning
+### Attention monitoring system for students in online learning - based on [Abhishek Tandon](https://github.com/Tandon-A/emotic) project!
 
 <p align="center">
   <img width="650" height="400" src="https://i.ibb.co/10GRLpG/Attentive-recognition.jpg">
@@ -9,6 +9,7 @@
 ## About The Project
 
 ___
+
 
 The World Health Organization declared COVID-19 a global emergency on January 30, 2020 and an epidemic on March 11,2020.
 
@@ -50,18 +51,13 @@ AttentivenessRec/
 │   │   └── ...
 │   ├── config.txt 
 │   └── inference_file.txt      # Contains the frame PATH and b-box details
-├── docs/
-│   ├── Annotations
-│   │   └── ...
-│   ├── emotic
-│   │   └── ...
-│   └──  emotic_pre
-│        └── ...
 ├── public/
 │   ├── img/                    # Images of the report (The graph will update in real-time)
 │   │   └── ...
 │   ├── reports/                # System report
 │   │   └── ...
+│   └──  test_img                # Images for unit tests               
+│       └── ...
 ├── src/
 │   ├── app.py
 │   ├── attention_calculator.py
@@ -76,15 +72,12 @@ AttentivenessRec/
 │   ├── gui.py
 │   ├── inference.py
 │   ├── loss.py
-│   ├── model_creator.py
 │   ├── prepare_models.py
 │   ├── statistics_data_loader.py
 │   ├── test.py
 │   └──  train.py
 ├── test/
-│   ├── unit.py                  # Currently without content   
-│   ├── feature.py               # Currently without content
-│   └── Integration.py           # Currently without content
+│   └── unit.py                  # Currently without content   
 ├── venv
 │   └── ...
 ├── .gitignore
@@ -161,62 +154,50 @@ After doing so you will be able to run the app by clicking on 'Run app'
 
 ## Built With
 
+* [Tandon-A](https://github.com/Tandon-A/emotic) -Project that uses the EMOTIC dataset and follows the methodology as
+  introduced in the paper ['Context based emotion recognition using EMOTIC dataset'](https://arxiv.org/pdf/2003.13401.pdf).
 * [OpenCV](https://opencv.org/) - An open source computer vision and machine learning software library with focus on
   real-time applications..
 * [Pandas](https://pandas.pydata.org/) - A fast, powerful, flexible and easy to use open source data analysis and
   manipulation tool.
 * [MTCNN](https://github.com/ipazc/mtcnn) - MTCNN face detection implementation for TensorFlow, as a PIP package.
+* [Pytorch](https://pytorch.org/) - An open source machine learning framework that accelerates the path from research 
+  prototyping to production deployment.
+* [Numpy](https://numpy.org/) - Fundamental package for scientific computing with Python. 
+* [Matplotlib](https://matplotlib.org/) - A comprehensive library for creating static, animated, and interactive 
+  visualizations in Python.
+* [tkinter](https://matplotlib.org/)  - A standard Python interface to the Tk GUI toolkit.
+  
 
-## Training
-
-## Testing
-
-## Inference
-
-`App.py` runs on a video streaming sources, performs analysis of the frames and presents conclusions.
-<p align="center">
-  <img width="250" height="50" src="https://imagehost.imageupload.net/2020/04/27/injection.jpg">
-</p>
-
-The conclusions are saved in the `inference_list.txt` file.
-
-```sh
-...\AttentivenessRec\debug_exp\frames\frame.jpg Anticipation Confidence Disconnection Engagement Excitement Happiness 5.9682 5.2205 6.6595
-```
+## Training, Testing & Inference
+Please refer [Tandon-A](https://github.com/Tandon-A/emotic) README.md file.
 
 ## Acknowledgments & Citation
-
 ___
 
 * [Paper](https://arxiv.org/pdf/2003.13401.pdf) - Context Based Emotion Recognition using EMOTIC Dataset.
 * [Dataset Webpage](http://sunai.uoc.edu/emotic/) - EMOTions In Context, is a database of images with people in real
   environments, annotated with their apparent emotions.
-* [Implementation Webpage](http://sunai.uoc.edu/emotic/) - PyTorch implementation of Emotic CNN methodology to recognize
-  emotions in images using context information..
-
-```
-R. Kosti, J.M. Álvarez, A. Recasens and A. Lapedriza, "Context based emotion recognition using
-emotic dataset", IEEE Transactions on Pattern Analysis and Machine Intelligence (PAMI), 2019.
-```
+* [Tandon-A](https://github.com/Tandon-A/emotic) - PyTorch implementation of Emotic CNN methodology to recognize
+  emotions in images using context information.
 
 ```
 R. Kosti, J.M. Álvarez, A. Recasens and A. Lapedriza, "Emotion Recognition in Context", Computer
 Vision and Pattern Recognition (CVPR), 2017.
 ```
 
-## About Us
+```
+R. Kosti, J.M. Álvarez, A. Recasens and A. Lapedriza, "Context based emotion recognition using
+emotic dataset", IEEE Transactions on Pattern Analysis and Machine Intelligence (PAMI), 2019.
+```
 
+## About Us
 ___
 
 <p align="center">
   <img width="750" height="650" src="https://i.ibb.co/XzFVTkk/About-Us.jpg">
 </p>
 
-## License
-
-___
-
-MIT?
 
 
 
