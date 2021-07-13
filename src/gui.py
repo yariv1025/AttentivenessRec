@@ -1,3 +1,4 @@
+import os
 import cv2
 import time
 import tkinter as tk
@@ -99,10 +100,22 @@ class App:
         """
         quit from program
         """
+
+        main_path = os.path.dirname(os.getcwd())
+        img_path = main_path + "\debug_exp\\frames\\frame.jpg"
+        inference_list_path = main_path + "\debug_exp\\results\\inference_list.txt"
+
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             self.exit_flag = False
-            self.figure.savefig("../public/img/graph.png", bbox_inches='tight')
+            self.figure.savefig("../public/img/graph.jpg", bbox_inches='tight')
             self.statistics.save_to_pdf()
+
+            try:
+                os.remove(img_path)
+                os.remove(inference_list_path)
+            except FileNotFoundError:
+                pass
+
             self.window.destroy()
             exit(0)
 
