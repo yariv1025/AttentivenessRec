@@ -6,6 +6,7 @@ import pandas
 import cv2
 import numpy
 
+from src.attention_calculator import AttentionCalc
 from src.class_details import ClassDetails
 from src.frame_saver import FrameSaver
 from src.statistics_data_loader import Statistics
@@ -103,7 +104,7 @@ class StatisticsTestCase(unittest.TestCase):
         expected = sorted(['Disconnection', 'Affection', 'Annoyance'])
         result = sorted(self.stat.get_top_3())
 
-        self.assertEquals(expected, result)
+        self.assertEqual(expected, result)
 
     def test_get_data_frame(self):
         expected = pandas.DataFrame()
@@ -135,6 +136,98 @@ class FrameSaverTestCase(unittest.TestCase):
         result = os.path.isfile(self.img_path)
 
         self.assertTrue(result)
+
+
+class AttentionCalcTestCase(unittest.TestCase):
+    # set parameters for attention calculator
+    cont_weights = [0.3, 0.3, 0.4]
+    ratio = 0.6
+    alpha = 0.3
+    weights = [cont_weights, ratio, alpha]
+
+    attention_calculator = AttentionCalc(weights[0], weights[1], weights[2])
+
+    # emotion_value function test-case
+    def test_emotion_value_positive(self):
+        emotion = 'Surprise'
+        expected = 1
+        result = self.attention_calculator.emotion_value(emotion)
+
+        self.assertEqual(expected, result)
+
+    def test_emotion_value_negative(self):
+        emotion = 'Anger'
+        expected = -1
+        result = self.attention_calculator.emotion_value(emotion)
+
+        self.assertEqual(expected, result)
+
+    def test_emotion_value_neutral(self):
+        emotion = 'Affection'
+        expected = 0
+        result = self.attention_calculator.emotion_value(emotion)
+
+        self.assertEqual(expected, result)
+
+    def test_emotion_value_empty(self):
+        emotion = None
+        result = self.attention_calculator.emotion_value
+
+        self.assertRaises(ValueError, result, emotion)
+
+    def test_emotion_value_other(self):
+        emotion = 'Other'
+        result = self.attention_calculator.emotion_value
+
+        self.assertRaises(ValueError, result, emotion)
+
+    # emotion_calc function test-case
+    def test_emotion_calc(self):
+        emotions = ['Anticipation', 'Confidence', 'Engagement', 'Esteem', 'Excitement',
+                    'Happiness', 'Peace', 'Surprise', 'Anger', 'Annoyance', 'Aversion', 'Disapproval', 'Disconnection', 'Disquietment',
+                    'Doubt/Confusion', 'Embarrassment', 'Fear', 'Sadness',
+                    'Sensitivity', 'Affection', 'Pleasure', 'Sympathy', 'Fatigue', 'Pain', 'Suffering', 'Yearning']
+
+        expected = 2
+        result = self.attention_calculator.emotion_calc(emotions)
+
+        self.assertEqual(expected, result)
+
+    def test_emotion_calc_empty(self):
+        emotions = []
+
+        expected = 5
+        result = self.attention_calculator.emotion_calc(emotions)
+
+        self.assertEqual(expected, result)
+
+    def test_emotion_calc_other(self):
+        emotions = ['Not', 'Emotion']
+
+        expected = 5
+        result = self.attention_calculator.emotion_calc
+
+        self.assertRaises(ValueError, result, emotions)
+
+    # cont_calc function test-case
+    def test_cont_calc(self):
+        cont = [5, 5, 5]
+        expected = 5
+        result = self.attention_calculator.cont_calc(cont)
+
+        self.assertEqual(expected, result)
+
+    # attention_calc function test-case
+    def test_attention_calc(self):
+        emotions_cont_list = [['Affection', 'Disconnection', 'Disquietment', 'Engagement', 'Esteem', 'Happiness',
+                               'Peace', 'Pleasure', 'Sympathy'],
+                              [5.9388, 4.8419, 6.4948]
+                              ]
+        expected = 1.9596
+        result = self.attention_calculator.attention_calc(emotions_cont_list)
+
+        self.assertEqual(expected, result)
+
 
 
 if __name__ == '__main__':
