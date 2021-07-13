@@ -77,5 +77,4 @@ class AttentionCalc(object):
 
         result = emotion_result * self.ratio + cont_result * (1 - self.ratio)
         self.p_result = result * self.alpha + self.p_result * (1 - self.alpha)
-        print(self.p_result)
         return self.p_result

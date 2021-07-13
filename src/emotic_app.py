@@ -1,8 +1,6 @@
 import argparse
 import os
 
-import cv2
-
 from train import train_emotic
 from test import test_emotic
 from inference import inference_emotic
@@ -117,10 +115,3 @@ def emotic():
 
     else:
         raise ValueError('Unknown mode')
-
-
-def get_model():
-    print(emotic())
-
-
-get_model()

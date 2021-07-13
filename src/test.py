@@ -1,14 +1,11 @@
 import numpy as np 
 import os 
 import scipy.io
+import torch
+
 from sklearn.metrics import average_precision_score, precision_recall_curve
-
-import torch 
-import torch.nn as nn 
-from torch.utils.data import DataLoader 
-import torchvision.models as models
+from torch.utils.data import DataLoader
 from torchvision import transforms
-
 from emotic_dataset import Emotic_PreDataset
 
 

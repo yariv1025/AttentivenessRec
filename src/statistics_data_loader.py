@@ -1,9 +1,7 @@
 from datetime import datetime
-
 from pandas import DataFrame
 import matplotlib.pyplot as plt
-from fpdf import FPDF, Template
-from src.class_details import ClassDetails
+from fpdf import Template
 
 
 class Statistics(object):
@@ -249,8 +247,8 @@ class Statistics(object):
         # Note we access the elements treating the template instance as a "dict"
 
         # Header:
-        pdf_file["company_logo"] = "../public/img/SCE_logo.png"
-        pdf_file["github_barcode"] = "../public/img/github.png"
+        pdf_file["company_logo"] = "../public/img/SCE_logo.jpg"
+        pdf_file["github_barcode"] = "../public/img/github.jpg"
         pdf_file["company_header"] = "AttentivenessRec Report"
 
         # Lecture and lecturer details:
@@ -283,7 +281,7 @@ class Statistics(object):
 
         # Graph:
         pdf_file["graph_header"] = "Graph:"
-        pdf_file["graph"] = "../public/img/graph.png"
+        pdf_file["graph"] = "../public/img/graph.jpg"
 
         # Rights
         pdf_file["rights"] = "© 2021 Yariv Garala & Stav Lobel. All rights reserved."

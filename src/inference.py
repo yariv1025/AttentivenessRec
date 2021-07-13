@@ -1,8 +1,8 @@
 import cv2
 import numpy as np 
-import os 
+import os
+import torch
 
-import torch 
 from torchvision import transforms
 
 

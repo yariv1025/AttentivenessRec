@@ -28,8 +28,8 @@ class FaceDetectorTestCase(unittest.TestCase):
     fd = FaceDetector()
 
     main_path = os.path.dirname(os.getcwd())
-    img_with_face = cv2.imread(main_path + "\public\\test_img\with_face.png")
-    img_without_face = cv2.imread(main_path + "\public\\test_img\without_face.png")
+    img_with_face = cv2.imread(main_path + "\public\\test_img\with_face.jpg")
+    img_without_face = cv2.imread(main_path + "\public\\test_img\without_face.jpg")
 
     def test_get_face(self):
         result = self.fd.get_face(self.img_with_face)
@@ -121,7 +121,7 @@ class FrameSaverTestCase(unittest.TestCase):
 
     main_path = os.path.dirname(os.getcwd())
     img_path = main_path + "\debug_exp\\frames\\frame.jpg"
-    img = cv2.imread(main_path + "\public\\test_img\\frame.png")
+    img = cv2.imread(main_path + "\public\\test_img\\frame.jpg")
 
     fs = FrameSaver(2, None, locks, None, None)
 

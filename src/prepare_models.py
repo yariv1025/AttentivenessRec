@@ -1,8 +1,8 @@
 import os
 import torch
-from torch.autograd import Variable as V
+# from torch.autograd import Variable as V
 import torchvision.models as models
-from torch.nn import functional as F
+# from torch.nn import functional as F
 
 
 def prep_models(context_model='resnet18', body_model='resnet18', model_dir='./'):
