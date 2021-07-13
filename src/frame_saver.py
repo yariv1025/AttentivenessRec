@@ -31,6 +31,8 @@ class FrameSaver(threading.Thread):
             os.makedirs(self.frames_path)
             print("Directory frames has been created.")
 
+        self.first_frame()
+
     def save_frame(self, frame, faces=None):
         """
         The main function for storing the images in the memory.
@@ -55,6 +57,13 @@ class FrameSaver(threading.Thread):
             f.write(
                 img_path + ' ' + str(faces[0]) + ' ' + str(faces[1]) + ' ' + str(faces[2]) + ' ' + str(
                     faces[3]))
+
+    def first_frame(self):
+        main_path = os.path.dirname(os.getcwd())
+        img_src_path = main_path + "\public\\img\\frame.jpg"
+        img = cv2.imread(img_src_path)
+
+        return self.save_frame(img)
 
     def run(self):
         """
